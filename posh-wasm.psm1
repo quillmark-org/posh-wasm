@@ -5,7 +5,7 @@
 # bundled @quillmark/wasm build (dist/) and does the actual render.
 #
 # Public surface (mirrors quillmark's Python API):
-#   Render-QuillDocument   ~ engine.render(quill, doc, fmt)   (alias: Invoke-QuillRender)
+#   Export-QuillDocument   ~ engine.render(quill, doc, fmt)   (alias: Invoke-QuillRender)
 #   Get-Quill              ~ Quill.from_path + .metadata/.schema/.blueprint + supported_formats
 #   Test-QuillDocument     ~ quill.validate(doc)
 #
@@ -367,7 +367,7 @@ function Resolve-RenderOutputs {
 # Public cmdlets
 # ==========================================================================
 
-function Render-QuillDocument {
+function Export-QuillDocument {
     <#
     .SYNOPSIS
         Render a quill document to PDF/SVG/PNG via @quillmark/wasm, fully offline.
@@ -395,9 +395,9 @@ function Render-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request timeout (also the host warm-up timeout). Default 120.
     .EXAMPLE
-        Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
+        Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Render-QuillDocument -QuillPath .\memo\0.2.0 -OutputDirectory .\out
+        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\memo\0.2.0 -OutputDirectory .\out
     #>
     [CmdletBinding(DefaultParameterSetName = 'ToPath')]
     [OutputType([PSCustomObject])]
@@ -474,7 +474,7 @@ function Render-QuillDocument {
         if ($artifacts.Count -eq 0) { Write-Error "Render for '$src' returned no artifacts."; return }
 
         $baseName = if ($src -in '(seed)', '(inline)') { if ($qhost.Info.metadata) { $qhost.Info.metadata.name } else { 'document' } } else { $src }
-        $targets = Resolve-RenderOutputs -Artifacts $artifacts -Mode $mode -OutputPath $OutputPath -OutputDirectory $OutputDirectory -BaseName $baseName -Format $Format
+        $targets = @(Resolve-RenderOutputs -Artifacts $artifacts -Mode $mode -OutputPath $OutputPath -OutputDirectory $OutputDirectory -BaseName $baseName -Format $Format)
 
         for ($i = 0; $i -lt $artifacts.Count; $i++) {
             [IO.File]::WriteAllBytes($targets[$i], [Convert]::FromBase64String($artifacts[$i].base64))
@@ -668,4 +668,4 @@ function Test-QuillDocument {
     }
 }
 
-Export-ModuleMember -Function Render-QuillDocument, Get-Quill, Test-QuillDocument -Alias Invoke-QuillRender
+Export-ModuleMember -Function Export-QuillDocument, Get-Quill, Test-QuillDocument -Alias Invoke-QuillRender

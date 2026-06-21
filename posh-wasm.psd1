@@ -13,7 +13,7 @@
     # .NET FW 4.6.2 and load under Windows PowerShell 5.1 and PowerShell 7 on Windows).
     CompatiblePSEditions = @('Desktop', 'Core')
 
-    FunctionsToExport = @('Render-QuillDocument', 'Get-Quill', 'Test-QuillDocument')
+    FunctionsToExport = @('Export-QuillDocument', 'Get-Quill', 'Test-QuillDocument')
     CmdletsToExport   = @()
     VariablesToExport = @()
     AliasesToExport   = @('Invoke-QuillRender')

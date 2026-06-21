@@ -28,38 +28,33 @@ Everything else (the managed WebView2 DLLs, the per-architecture native
 Import-Module .\posh-wasm.psd1
 ```
 
-> The primary cmdlet uses the verb `Render`, which isn't on PowerShell's approved
-> list, so import prints an "unapproved verbs" warning. This is intentional (it
-> mirrors quillmark's Python `render`). Suppress it with
-> `Import-Module .\posh-wasm.psd1 -DisableNameChecking`.
-
 ## Cmdlets
 
 The surface mirrors quillmark's Python API:
 
 | Cmdlet | Python parallel | Purpose |
 |---|---|---|
-| `Render-QuillDocument` | `engine.render(quill, doc, fmt)` | render document(s) to file(s) |
+| `Export-QuillDocument` | `engine.render(quill, doc, fmt)` | render document(s) to file(s) |
 | `Get-Quill` | `Quill.from_path` + `.metadata`/`.schema`/`.blueprint` + `supported_formats` | inspect a quill |
 | `Test-QuillDocument` | `quill.validate(doc)` | validate without rendering |
 
-`Invoke-QuillRender` is kept as a back-compat alias of `Render-QuillDocument`.
+`Invoke-QuillRender` is kept as a back-compat alias of `Export-QuillDocument`.
 
 ### Usage
 
 ```powershell
 # Render a quill's seeded starter document to PDF
-Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
+Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
 
 # Render your own markdown document
-Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf -MarkdownPath .\doc.md
+Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf -MarkdownPath .\doc.md
 
 # SVG / PNG (one artifact per page -> memo-1.svg, memo-2.svg, ...)
-Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.svg -Format svg
+Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.svg -Format svg
 
 # BULK: pipe many files; ONE WebView2 host is warmed and reused for all of them
 Get-ChildItem .\inbox\*.md |
-    Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputDirectory .\out
+    Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputDirectory .\out
 
 # Validate a whole batch (fail fast) before rendering
 Get-ChildItem .\inbox\*.md |
@@ -79,7 +74,7 @@ pipeline invocation** and reused for every piped item, then disposed — so a
 batch pays the load once with no session object to open or close. (In a quick
 run, the first render took ~390 ms and subsequent ones ~50–70 ms each.)
 
-### `Render-QuillDocument`
+### `Export-QuillDocument`
 
 | Parameter | Description |
 |---|---|
