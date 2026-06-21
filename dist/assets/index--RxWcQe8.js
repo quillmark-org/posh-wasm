@@ -1,4 +1,4 @@
-let H;
+let G;
 let __tla = (async ()=>{
     (function() {
         const t = document.createElement("link").relList;
@@ -21,53 +21,53 @@ let __tla = (async ()=>{
             fetch(r.href, i);
         }
     })();
-    let W, z, U, Q, K;
-    W = "modulepreload";
-    z = function(n, t) {
+    let K, H, P, X, Y;
+    K = "modulepreload";
+    H = function(n, t) {
         return new URL(n, t).href;
     };
-    U = {};
-    Q = function(t, e, o) {
+    P = {};
+    X = function(t, e, o) {
         let r = Promise.resolve();
         if (e && e.length > 0) {
-            let I = function(p) {
-                return Promise.all(p.map((y)=>Promise.resolve(y).then((E)=>({
+            let x = function(p) {
+                return Promise.all(p.map((h)=>Promise.resolve(h).then((S)=>({
                             status: "fulfilled",
-                            value: E
-                        }), (E)=>({
+                            value: S
+                        }), (S)=>({
                             status: "rejected",
-                            reason: E
+                            reason: S
                         }))));
             };
-            const d = document.getElementsByTagName("link"), s = document.querySelector("meta[property=csp-nonce]"), w = s?.nonce || s?.getAttribute("nonce");
-            r = I(e.map((p)=>{
-                if (p = z(p, o), p in U) return;
-                U[p] = !0;
-                const y = p.endsWith(".css"), E = y ? '[rel="stylesheet"]' : "";
-                if (o) for(let S = d.length - 1; S >= 0; S--){
-                    const O = d[S];
-                    if (O.href === p && (!y || O.rel === "stylesheet")) return;
+            const d = document.getElementsByTagName("link"), c = document.querySelector("meta[property=csp-nonce]"), l = c?.nonce || c?.getAttribute("nonce");
+            r = x(e.map((p)=>{
+                if (p = H(p, o), p in P) return;
+                P[p] = !0;
+                const h = p.endsWith(".css"), S = h ? '[rel="stylesheet"]' : "";
+                if (o) for(let F = d.length - 1; F >= 0; F--){
+                    const M = d[F];
+                    if (M.href === p && (!h || M.rel === "stylesheet")) return;
                 }
-                else if (document.querySelector(`link[href="${p}"]${E}`)) return;
-                const v = document.createElement("link");
-                if (v.rel = y ? "stylesheet" : W, y || (v.as = "script"), v.crossOrigin = "", v.href = p, w && v.setAttribute("nonce", w), document.head.appendChild(v), y) return new Promise((S, O)=>{
-                    v.addEventListener("load", S), v.addEventListener("error", ()=>O(new Error(`Unable to preload CSS for ${p}`)));
+                else if (document.querySelector(`link[href="${p}"]${S}`)) return;
+                const k = document.createElement("link");
+                if (k.rel = h ? "stylesheet" : K, h || (k.as = "script"), k.crossOrigin = "", k.href = p, l && k.setAttribute("nonce", l), document.head.appendChild(k), h) return new Promise((F, M)=>{
+                    k.addEventListener("load", F), k.addEventListener("error", ()=>M(new Error(`Unable to preload CSS for ${p}`)));
                 });
             }));
         }
         function i(d) {
-            const s = new Event("vite:preloadError", {
+            const c = new Event("vite:preloadError", {
                 cancelable: !0
             });
-            if (s.payload = d, window.dispatchEvent(s), !s.defaultPrevented) throw d;
+            if (c.payload = d, window.dispatchEvent(c), !c.defaultPrevented) throw d;
         }
         return r.then((d)=>{
-            for (const s of d || [])s.status === "rejected" && i(s.reason);
+            for (const c of d || [])c.status === "rejected" && i(c.reason);
             return t().catch(i);
         });
     };
-    K = "" + new URL("wasm_bg-B2x0-czq.wasm", import.meta.url).href;
-    H = async (n = {}, t)=>{
+    Y = "" + new URL("wasm_bg-B2x0-czq.wasm", import.meta.url).href;
+    G = async (n = {}, t)=>{
         let e;
         if (t.startsWith("data:")) {
             const o = t.replace(/^data:.*?base64,/, "");
@@ -89,15 +89,15 @@ let __tla = (async ()=>{
         }
         return e.instance.exports;
     };
-    class m {
+    class y {
         static __wrap(t) {
             t = t >>> 0;
-            const e = Object.create(m.prototype);
-            return e.__wbg_ptr = t, L.register(e, e.__wbg_ptr, e), e;
+            const e = Object.create(y.prototype);
+            return e.__wbg_ptr = t, V.register(e, e.__wbg_ptr, e), e;
         }
         __destroy_into_raw() {
             const t = this.__wbg_ptr;
-            return this.__wbg_ptr = 0, L.unregister(this), t;
+            return this.__wbg_ptr = 0, V.unregister(this), t;
         }
         free() {
             const t = this.__destroy_into_raw();
@@ -106,10 +106,10 @@ let __tla = (async ()=>{
         static blueprintInstruction(t) {
             let e, o;
             try {
-                const d = _.__wbindgen_add_to_stack_pointer(-16), s = f(t, _.__wbindgen_export, _.__wbindgen_export2), w = b;
-                _.document_blueprintInstruction(d, s, w);
+                const d = _.__wbindgen_add_to_stack_pointer(-16), c = f(t, _.__wbindgen_export, _.__wbindgen_export2), l = b;
+                _.document_blueprintInstruction(d, c, l);
                 var r = a().getInt32(d + 0, !0), i = a().getInt32(d + 4, !0);
-                return e = r, o = i, l(r, i);
+                return e = r, o = i, w(r, i);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(e, o, 1);
             }
@@ -130,7 +130,7 @@ let __tla = (async ()=>{
         }
         clone() {
             const t = _.document_clone(this.__wbg_ptr);
-            return m.__wrap(t);
+            return y.__wrap(t);
         }
         static currentSchemaVersion() {
             let t, e;
@@ -138,13 +138,13 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_currentSchemaVersion(i);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
         }
         equals(t) {
-            return D(t, m), _.document_equals(this.__wbg_ptr, t.__wbg_ptr) !== 0;
+            return Q(t, y), _.document_equals(this.__wbg_ptr, t.__wbg_ptr) !== 0;
         }
         static formatDiagnostic(t) {
             let e, o;
@@ -152,7 +152,7 @@ let __tla = (async ()=>{
                 const d = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_formatDiagnostic(d, g(t));
                 var r = a().getInt32(d + 0, !0), i = a().getInt32(d + 4, !0);
-                return e = r, o = i, l(r, i);
+                return e = r, o = i, w(r, i);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(e, o, 1);
             }
@@ -163,29 +163,29 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_formatRules(i);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
         }
         static fromJson(t) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_fromJson(i, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_fromJson(i, d, c);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
-                return m.__wrap(e);
+                return y.__wrap(e);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16);
             }
         }
         static fromMarkdown(t) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_fromMarkdown(i, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_fromMarkdown(i, d, c);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
-                return m.__wrap(e);
+                return y.__wrap(e);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16);
             }
@@ -213,11 +213,11 @@ let __tla = (async ()=>{
         }
         static makeCard(t, e, o) {
             try {
-                const I = _.__wbindgen_add_to_stack_pointer(-16), p = f(t, _.__wbindgen_export, _.__wbindgen_export2), y = b;
-                var r = k(o) ? 0 : f(o, _.__wbindgen_export, _.__wbindgen_export2), i = b;
-                _.document_makeCard(I, p, y, k(e) ? 0 : g(e), r, i);
-                var d = a().getInt32(I + 0, !0), s = a().getInt32(I + 4, !0), w = a().getInt32(I + 8, !0);
-                if (w) throw u(s);
+                const x = _.__wbindgen_add_to_stack_pointer(-16), p = f(t, _.__wbindgen_export, _.__wbindgen_export2), h = b;
+                var r = I(o) ? 0 : f(o, _.__wbindgen_export, _.__wbindgen_export2), i = b;
+                _.document_makeCard(x, p, h, I(e) ? 0 : g(e), r, i);
+                var d = a().getInt32(x + 0, !0), c = a().getInt32(x + 4, !0), l = a().getInt32(x + 8, !0);
+                if (l) throw u(c);
                 return u(d);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16);
@@ -249,7 +249,7 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_quillRef(i, this.__wbg_ptr);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
@@ -260,7 +260,7 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_quillRefHint(i);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
@@ -289,8 +289,8 @@ let __tla = (async ()=>{
         }
         removeCardExtNamespace(t, e) {
             try {
-                const d = _.__wbindgen_add_to_stack_pointer(-16), s = f(e, _.__wbindgen_export, _.__wbindgen_export2), w = b;
-                _.document_removeCardExtNamespace(d, this.__wbg_ptr, t, s, w);
+                const d = _.__wbindgen_add_to_stack_pointer(-16), c = f(e, _.__wbindgen_export, _.__wbindgen_export2), l = b;
+                _.document_removeCardExtNamespace(d, this.__wbg_ptr, t, c, l);
                 var o = a().getInt32(d + 0, !0), r = a().getInt32(d + 4, !0), i = a().getInt32(d + 8, !0);
                 if (i) throw u(r);
                 return u(o);
@@ -300,8 +300,8 @@ let __tla = (async ()=>{
         }
         removeCardField(t, e) {
             try {
-                const d = _.__wbindgen_add_to_stack_pointer(-16), s = f(e, _.__wbindgen_export, _.__wbindgen_export2), w = b;
-                _.document_removeCardField(d, this.__wbg_ptr, t, s, w);
+                const d = _.__wbindgen_add_to_stack_pointer(-16), c = f(e, _.__wbindgen_export, _.__wbindgen_export2), l = b;
+                _.document_removeCardField(d, this.__wbg_ptr, t, c, l);
                 var o = a().getInt32(d + 0, !0), r = a().getInt32(d + 4, !0), i = a().getInt32(d + 8, !0);
                 if (i) throw u(r);
                 return u(o);
@@ -322,8 +322,8 @@ let __tla = (async ()=>{
         }
         removeExtNamespace(t) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_removeExtNamespace(i, this.__wbg_ptr, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_removeExtNamespace(i, this.__wbg_ptr, d, c);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
                 return u(e);
@@ -333,8 +333,8 @@ let __tla = (async ()=>{
         }
         removeField(t) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_removeField(i, this.__wbg_ptr, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_removeField(i, this.__wbg_ptr, d, c);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
                 return u(e);
@@ -351,8 +351,8 @@ let __tla = (async ()=>{
                 const r = _.__wbindgen_add_to_stack_pointer(-16), i = f(t, _.__wbindgen_export, _.__wbindgen_export2), d = b;
                 _.document_schemaVersionOf(r, i, d);
                 var e = a().getInt32(r + 0, !0), o = a().getInt32(r + 4, !0);
-                let s;
-                return e !== 0 && (s = l(e, o).slice(), _.__wbindgen_export4(e, o * 1, 1)), s;
+                let c;
+                return e !== 0 && (c = w(e, o).slice(), _.__wbindgen_export4(e, o * 1, 1)), c;
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16);
             }
@@ -369,8 +369,8 @@ let __tla = (async ()=>{
         }
         setCardExtNamespace(t, e, o) {
             try {
-                const d = _.__wbindgen_add_to_stack_pointer(-16), s = f(e, _.__wbindgen_export, _.__wbindgen_export2), w = b;
-                _.document_setCardExtNamespace(d, this.__wbg_ptr, t, s, w, g(o));
+                const d = _.__wbindgen_add_to_stack_pointer(-16), c = f(e, _.__wbindgen_export, _.__wbindgen_export2), l = b;
+                _.document_setCardExtNamespace(d, this.__wbg_ptr, t, c, l, g(o));
                 var r = a().getInt32(d + 0, !0), i = a().getInt32(d + 4, !0);
                 if (i) throw u(r);
             } finally{
@@ -379,8 +379,8 @@ let __tla = (async ()=>{
         }
         setCardKind(t, e) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(e, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_setCardKind(i, this.__wbg_ptr, t, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(e, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_setCardKind(i, this.__wbg_ptr, t, d, c);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
                 if (r) throw u(o);
             } finally{
@@ -399,8 +399,8 @@ let __tla = (async ()=>{
         }
         setExtNamespace(t, e) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_setExtNamespace(i, this.__wbg_ptr, d, s, g(e));
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_setExtNamespace(i, this.__wbg_ptr, d, c, g(e));
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
                 if (r) throw u(o);
             } finally{
@@ -409,8 +409,8 @@ let __tla = (async ()=>{
         }
         setField(t, e) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_setField(i, this.__wbg_ptr, d, s, g(e));
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_setField(i, this.__wbg_ptr, d, c, g(e));
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
                 if (r) throw u(o);
             } finally{
@@ -419,8 +419,8 @@ let __tla = (async ()=>{
         }
         setFill(t, e) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_setFill(i, this.__wbg_ptr, d, s, g(e));
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_setFill(i, this.__wbg_ptr, d, c, g(e));
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
                 if (r) throw u(o);
             } finally{
@@ -443,7 +443,7 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_toJson(i, this.__wbg_ptr);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
@@ -454,19 +454,19 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.document_toMarkdown(i, this.__wbg_ptr);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
         }
         static tryFromJson(t) {
             const e = f(t, _.__wbindgen_export, _.__wbindgen_export2), o = b, r = _.document_tryFromJson(e, o);
-            return r === 0 ? void 0 : m.__wrap(r);
+            return r === 0 ? void 0 : y.__wrap(r);
         }
         updateCardBody(t, e) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(e, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.document_updateCardBody(i, this.__wbg_ptr, t, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(e, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.document_updateCardBody(i, this.__wbg_ptr, t, d, c);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
                 if (r) throw u(o);
             } finally{
@@ -475,8 +475,8 @@ let __tla = (async ()=>{
         }
         updateCardField(t, e, o) {
             try {
-                const d = _.__wbindgen_add_to_stack_pointer(-16), s = f(e, _.__wbindgen_export, _.__wbindgen_export2), w = b;
-                _.document_updateCardField(d, this.__wbg_ptr, t, s, w, g(o));
+                const d = _.__wbindgen_add_to_stack_pointer(-16), c = f(e, _.__wbindgen_export, _.__wbindgen_export2), l = b;
+                _.document_updateCardField(d, this.__wbg_ptr, t, c, l, g(o));
                 var r = a().getInt32(d + 0, !0), i = a().getInt32(d + 4, !0);
                 if (i) throw u(r);
             } finally{
@@ -495,16 +495,16 @@ let __tla = (async ()=>{
             }
         }
     }
-    Symbol.dispose && (m.prototype[Symbol.dispose] = m.prototype.free);
-    class C {
+    Symbol.dispose && (y.prototype[Symbol.dispose] = y.prototype.free);
+    class E {
         static __wrap(t) {
             t = t >>> 0;
-            const e = Object.create(C.prototype);
-            return e.__wbg_ptr = t, $.register(e, e.__wbg_ptr, e), e;
+            const e = Object.create(E.prototype);
+            return e.__wbg_ptr = t, J.register(e, e.__wbg_ptr, e), e;
         }
         __destroy_into_raw() {
             const t = this.__wbg_ptr;
-            return this.__wbg_ptr = 0, $.unregister(this), t;
+            return this.__wbg_ptr = 0, J.unregister(this), t;
         }
         free() {
             const t = this.__destroy_into_raw();
@@ -516,7 +516,7 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.quill_backendId(i, this.__wbg_ptr);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
@@ -527,7 +527,7 @@ let __tla = (async ()=>{
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
                 _.quill_blueprint(i, this.__wbg_ptr);
                 var o = a().getInt32(i + 0, !0), r = a().getInt32(i + 4, !0);
-                return t = o, e = r, l(o, r);
+                return t = o, e = r, w(o, r);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16), _.__wbindgen_export4(t, e, 1);
             }
@@ -538,7 +538,7 @@ let __tla = (async ()=>{
                 _.quill_fromTree(i, g(t));
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
-                return C.__wrap(e);
+                return E.__wrap(e);
             } finally{
                 _.__wbindgen_add_to_stack_pointer(16);
             }
@@ -567,8 +567,8 @@ let __tla = (async ()=>{
         }
         seedCard(t) {
             try {
-                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), s = b;
-                _.quill_seedCard(i, this.__wbg_ptr, d, s);
+                const i = _.__wbindgen_add_to_stack_pointer(-16), d = f(t, _.__wbindgen_export, _.__wbindgen_export2), c = b;
+                _.quill_seedCard(i, this.__wbg_ptr, d, c);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
                 return u(e);
@@ -578,7 +578,7 @@ let __tla = (async ()=>{
         }
         seedDocument() {
             const t = _.quill_seedDocument(this.__wbg_ptr);
-            return m.__wrap(t);
+            return y.__wrap(t);
         }
         seedMain() {
             try {
@@ -598,7 +598,7 @@ let __tla = (async ()=>{
         validate(t) {
             try {
                 const i = _.__wbindgen_add_to_stack_pointer(-16);
-                D(t, m), _.quill_validate(i, this.__wbg_ptr, t.__wbg_ptr);
+                Q(t, y), _.quill_validate(i, this.__wbg_ptr, t.__wbg_ptr);
                 var e = a().getInt32(i + 0, !0), o = a().getInt32(i + 4, !0), r = a().getInt32(i + 8, !0);
                 if (r) throw u(o);
                 return u(e);
@@ -607,282 +607,282 @@ let __tla = (async ()=>{
             }
         }
     }
-    Symbol.dispose && (C.prototype[Symbol.dispose] = C.prototype.free);
-    function X(n, t) {
-        const e = Error(l(n, t));
+    Symbol.dispose && (E.prototype[Symbol.dispose] = E.prototype.free);
+    function Z(n, t) {
+        const e = Error(w(n, t));
         return g(e);
     }
-    function Y(n, t) {
-        const e = String(c(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
+    function tt(n, t) {
+        const e = String(s(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
         a().setInt32(n + 4, r, !0), a().setInt32(n + 0, o, !0);
-    }
-    function G(n, t) {
-        const e = String(c(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
-        a().setInt32(n + 4, r, !0), a().setInt32(n + 0, o, !0);
-    }
-    function Z(n, t) {
-        const e = c(t), o = typeof e == "bigint" ? e : void 0;
-        a().setBigInt64(n + 8, k(o) ? BigInt(0) : o, !0), a().setInt32(n + 0, !k(o), !0);
-    }
-    function tt(n) {
-        const t = c(n), e = typeof t == "boolean" ? t : void 0;
-        return k(e) ? 16777215 : e ? 1 : 0;
     }
     function et(n, t) {
-        const e = T(c(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
+        const e = String(s(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
         a().setInt32(n + 4, r, !0), a().setInt32(n + 0, o, !0);
     }
     function nt(n, t) {
-        return c(n) in c(t);
+        const e = s(t), o = typeof e == "bigint" ? e : void 0;
+        a().setBigInt64(n + 8, I(o) ? BigInt(0) : o, !0), a().setInt32(n + 0, !I(o), !0);
     }
     function rt(n) {
-        return typeof c(n) == "bigint";
+        const t = s(n), e = typeof t == "boolean" ? t : void 0;
+        return I(e) ? 16777215 : e ? 1 : 0;
     }
-    function _t(n) {
-        return typeof c(n) == "function";
+    function _t(n, t) {
+        const e = U(s(t)), o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
+        a().setInt32(n + 4, r, !0), a().setInt32(n + 0, o, !0);
     }
-    function ot(n) {
-        return c(n) === null;
+    function ot(n, t) {
+        return s(n) in s(t);
     }
     function it(n) {
-        const t = c(n);
-        return typeof t == "object" && t !== null;
+        return typeof s(n) == "bigint";
     }
     function at(n) {
-        return typeof c(n) == "string";
+        return typeof s(n) == "function";
     }
     function dt(n) {
-        return c(n) === void 0;
+        return s(n) === null;
     }
-    function st(n, t) {
-        return c(n) === c(t);
+    function st(n) {
+        const t = s(n);
+        return typeof t == "object" && t !== null;
     }
-    function ct(n, t) {
-        return c(n) == c(t);
+    function ct(n) {
+        return typeof s(n) == "string";
     }
-    function ut(n, t) {
-        const e = c(t), o = typeof e == "number" ? e : void 0;
-        a().setFloat64(n + 8, k(o) ? 0 : o, !0), a().setInt32(n + 0, !k(o), !0);
+    function ut(n) {
+        return s(n) === void 0;
     }
     function gt(n, t) {
-        const e = c(t), o = typeof e == "string" ? e : void 0;
-        var r = k(o) ? 0 : f(o, _.__wbindgen_export, _.__wbindgen_export2), i = b;
-        a().setInt32(n + 4, i, !0), a().setInt32(n + 0, r, !0);
+        return s(n) === s(t);
     }
     function bt(n, t) {
-        throw new Error(l(n, t));
+        return s(n) == s(t);
     }
-    function ft() {
-        return q(function(n, t) {
-            const e = c(n).call(c(t));
+    function ft(n, t) {
+        const e = s(t), o = typeof e == "number" ? e : void 0;
+        a().setFloat64(n + 8, I(o) ? 0 : o, !0), a().setInt32(n + 0, !I(o), !0);
+    }
+    function lt(n, t) {
+        const e = s(t), o = typeof e == "string" ? e : void 0;
+        var r = I(o) ? 0 : f(o, _.__wbindgen_export, _.__wbindgen_export2), i = b;
+        a().setInt32(n + 4, i, !0), a().setInt32(n + 0, r, !0);
+    }
+    function wt(n, t) {
+        throw new Error(w(n, t));
+    }
+    function pt() {
+        return O(function(n, t) {
+            const e = s(n).call(s(t));
             return g(e);
         }, arguments);
     }
-    function wt(n) {
-        return c(n).done;
+    function mt(n) {
+        return s(n).done;
     }
-    function lt(n) {
-        const t = c(n).entries();
+    function yt(n) {
+        const t = s(n).entries();
         return g(t);
     }
-    function pt(n) {
-        const t = Object.entries(c(n));
+    function ht(n) {
+        const t = Object.entries(s(n));
         return g(t);
     }
-    function mt(n, t) {
+    function vt(n, t) {
         let e, o;
         try {
-            e = n, o = t, console.error(l(n, t));
+            e = n, o = t, console.error(w(n, t));
         } finally{
             _.__wbindgen_export4(e, o, 1);
         }
     }
-    function yt(n) {
-        const t = Array.from(c(n));
+    function kt(n) {
+        const t = Array.from(s(n));
         return g(t);
     }
-    function ht() {
-        return q(function(n, t) {
-            globalThis.crypto.getRandomValues(B(n, t));
+    function It() {
+        return O(function(n, t) {
+            globalThis.crypto.getRandomValues(L(n, t));
         }, arguments);
     }
-    function vt() {
-        return q(function(n, t) {
-            const e = Reflect.get(c(n), c(t));
+    function xt() {
+        return O(function(n, t) {
+            const e = Reflect.get(s(n), s(t));
             return g(e);
         }, arguments);
     }
-    function kt(n, t) {
-        const e = c(n)[t >>> 0];
-        return g(e);
-    }
-    function It(n, t) {
-        const e = c(n)[t >>> 0];
-        return g(e);
-    }
-    function xt(n, t) {
-        const e = c(n)[c(t)];
-        return g(e);
-    }
     function Ct(n, t) {
-        const e = c(n)[c(t)];
+        const e = s(n)[t >>> 0];
         return g(e);
     }
-    function Et(n) {
-        let t;
-        try {
-            t = c(n) instanceof ArrayBuffer;
-        } catch  {
-            t = !1;
-        }
-        return t;
+    function Et(n, t) {
+        const e = s(n)[t >>> 0];
+        return g(e);
     }
-    function St(n) {
-        let t;
-        try {
-            t = c(n) instanceof Map;
-        } catch  {
-            t = !1;
-        }
-        return t;
+    function St(n, t) {
+        const e = s(n)[s(t)];
+        return g(e);
+    }
+    function Ft(n, t) {
+        const e = s(n)[s(t)];
+        return g(e);
     }
     function At(n) {
         let t;
         try {
-            t = c(n) instanceof Object;
-        } catch  {
-            t = !1;
-        }
-        return t;
-    }
-    function Ft(n) {
-        let t;
-        try {
-            t = c(n) instanceof Uint8Array;
+            t = s(n) instanceof ArrayBuffer;
         } catch  {
             t = !1;
         }
         return t;
     }
     function jt(n) {
-        return Array.isArray(c(n));
+        let t;
+        try {
+            t = s(n) instanceof Map;
+        } catch  {
+            t = !1;
+        }
+        return t;
     }
     function qt(n) {
-        return Number.isSafeInteger(c(n));
+        let t;
+        try {
+            t = s(n) instanceof Object;
+        } catch  {
+            t = !1;
+        }
+        return t;
     }
-    function Ot() {
-        return g(Symbol.iterator);
+    function Ot(n) {
+        let t;
+        try {
+            t = s(n) instanceof Uint8Array;
+        } catch  {
+            t = !1;
+        }
+        return t;
     }
     function Mt(n) {
-        const t = Object.keys(c(n));
-        return g(t);
-    }
-    function Nt(n) {
-        return c(n).length;
+        return Array.isArray(s(n));
     }
     function Rt(n) {
-        return c(n).length;
+        return Number.isSafeInteger(s(n));
+    }
+    function Nt() {
+        return g(Symbol.iterator);
     }
     function Tt(n) {
-        const t = new Uint8Array(c(n));
+        const t = Object.keys(s(n));
         return g(t);
     }
-    function Bt() {
+    function Bt(n) {
+        return s(n).length;
+    }
+    function Ut(n) {
+        return s(n).length;
+    }
+    function Lt(n) {
+        const t = new Uint8Array(s(n));
+        return g(t);
+    }
+    function $t() {
         const n = new Error;
         return g(n);
     }
-    function Ut() {
+    function Dt() {
         return g(new Map);
     }
-    function Lt(n, t) {
-        const e = new Error(l(n, t));
+    function Pt(n, t) {
+        const e = new Error(w(n, t));
         return g(e);
     }
-    function $t() {
+    function Vt() {
         const n = new Array;
         return g(n);
     }
-    function Dt() {
+    function Jt() {
         const n = new Object;
         return g(n);
     }
-    function Jt(n, t) {
-        const e = new Uint8Array(B(n, t));
+    function Qt(n, t) {
+        const e = new Uint8Array(L(n, t));
         return g(e);
     }
-    function Pt() {
-        return q(function(n) {
-            const t = c(n).next();
+    function Wt() {
+        return O(function(n) {
+            const t = s(n).next();
             return g(t);
         }, arguments);
     }
-    function Vt(n) {
-        const t = c(n).next;
+    function zt(n) {
+        const t = s(n).next;
         return g(t);
-    }
-    function Wt(n, t, e) {
-        Uint8Array.prototype.set.call(B(n, t), c(e));
-    }
-    function zt() {
-        return q(function(n, t, e) {
-            return Reflect.set(c(n), c(t), c(e));
-        }, arguments);
-    }
-    function Qt(n, t, e) {
-        c(n)[t >>> 0] = u(e);
     }
     function Kt(n, t, e) {
-        c(n)[u(t)] = u(e);
+        Uint8Array.prototype.set.call(L(n, t), s(e));
     }
-    function Ht(n, t, e) {
-        const o = c(n).set(c(t), c(e));
+    function Ht() {
+        return O(function(n, t, e) {
+            return Reflect.set(s(n), s(t), s(e));
+        }, arguments);
+    }
+    function Xt(n, t, e) {
+        s(n)[t >>> 0] = u(e);
+    }
+    function Yt(n, t, e) {
+        s(n)[u(t)] = u(e);
+    }
+    function Gt(n, t, e) {
+        const o = s(n).set(s(t), s(e));
         return g(o);
     }
-    function Xt(n, t) {
-        const e = c(t).stack, o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
+    function Zt(n, t) {
+        const e = s(t).stack, o = f(e, _.__wbindgen_export, _.__wbindgen_export2), r = b;
         a().setInt32(n + 4, r, !0), a().setInt32(n + 0, o, !0);
     }
-    function Yt(n) {
-        const t = c(n).value;
+    function te(n) {
+        const t = s(n).value;
         return g(t);
     }
-    function Gt(n) {
+    function ee(n) {
         return g(n);
     }
-    function Zt(n) {
+    function ne(n) {
         return g(n);
     }
-    function te(n, t) {
-        const e = l(n, t);
+    function re(n, t) {
+        const e = w(n, t);
         return g(e);
     }
-    function ee(n) {
+    function _e(n) {
         const t = BigInt.asUintN(64, n);
         return g(t);
     }
-    function ne(n) {
-        const t = c(n);
+    function oe(n) {
+        const t = s(n);
         return g(t);
     }
-    function re(n) {
+    function ie(n) {
         u(n);
     }
-    const L = typeof FinalizationRegistry > "u" ? {
+    const V = typeof FinalizationRegistry > "u" ? {
         register: ()=>{},
         unregister: ()=>{}
-    } : new FinalizationRegistry((n)=>_.__wbg_document_free(n >>> 0, 1)), $ = typeof FinalizationRegistry > "u" ? {
+    } : new FinalizationRegistry((n)=>_.__wbg_document_free(n >>> 0, 1)), J = typeof FinalizationRegistry > "u" ? {
         register: ()=>{},
         unregister: ()=>{}
     } : new FinalizationRegistry((n)=>_.__wbg_quill_free(n >>> 0, 1));
     function g(n) {
-        F === h.length && h.push(h.length + 1);
-        const t = F;
-        return F = h[t], h[t] = n, t;
+        j === v.length && v.push(v.length + 1);
+        const t = j;
+        return j = v[t], v[t] = n, t;
     }
-    function D(n, t) {
+    function Q(n, t) {
         if (!(n instanceof t)) throw new Error(`expected instance of ${t.name}`);
     }
-    function T(n) {
+    function U(n) {
         const t = typeof n;
         if (t == "number" || t == "boolean" || n == null) return `${n}`;
         if (t == "string") return `"${n}"`;
@@ -897,8 +897,8 @@ let __tla = (async ()=>{
         if (Array.isArray(n)) {
             const r = n.length;
             let i = "[";
-            r > 0 && (i += T(n[0]));
-            for(let d = 1; d < r; d++)i += ", " + T(n[d]);
+            r > 0 && (i += U(n[0]));
+            for(let d = 1; d < r; d++)i += ", " + U(n[d]);
             return i += "]", i;
         }
         const e = /\[object ([^\]]+)\]/.exec(toString.call(n));
@@ -913,224 +913,224 @@ let __tla = (async ()=>{
         return n instanceof Error ? `${n.name}: ${n.message}
 ${n.stack}` : o;
     }
-    function _e(n) {
-        n < 1028 || (h[n] = F, F = n);
+    function ae(n) {
+        n < 1028 || (v[n] = j, j = n);
     }
-    function B(n, t) {
+    function L(n, t) {
         return n = n >>> 0, A().subarray(n / 1, n / 1 + t);
     }
-    let x = null;
+    let C = null;
     function a() {
-        return (x === null || x.buffer.detached === !0 || x.buffer.detached === void 0 && x.buffer !== _.memory.buffer) && (x = new DataView(_.memory.buffer)), x;
+        return (C === null || C.buffer.detached === !0 || C.buffer.detached === void 0 && C.buffer !== _.memory.buffer) && (C = new DataView(_.memory.buffer)), C;
     }
-    function l(n, t) {
-        return n = n >>> 0, ie(n, t);
+    function w(n, t) {
+        return n = n >>> 0, se(n, t);
     }
-    let M = null;
+    let R = null;
     function A() {
-        return (M === null || M.byteLength === 0) && (M = new Uint8Array(_.memory.buffer)), M;
+        return (R === null || R.byteLength === 0) && (R = new Uint8Array(_.memory.buffer)), R;
     }
-    function c(n) {
-        return h[n];
+    function s(n) {
+        return v[n];
     }
-    function q(n, t) {
+    function O(n, t) {
         try {
             return n.apply(this, t);
         } catch (e) {
             _.__wbindgen_export3(g(e));
         }
     }
-    let h = new Array(1024).fill(void 0);
-    h.push(void 0, null, !0, !1);
-    let F = h.length;
-    function k(n) {
+    let v = new Array(1024).fill(void 0);
+    v.push(void 0, null, !0, !1);
+    let j = v.length;
+    function I(n) {
         return n == null;
     }
     function f(n, t, e) {
         if (e === void 0) {
-            const s = j.encode(n), w = t(s.length, 1) >>> 0;
-            return A().subarray(w, w + s.length).set(s), b = s.length, w;
+            const c = q.encode(n), l = t(c.length, 1) >>> 0;
+            return A().subarray(l, l + c.length).set(c), b = c.length, l;
         }
         let o = n.length, r = t(o, 1) >>> 0;
         const i = A();
         let d = 0;
         for(; d < o; d++){
-            const s = n.charCodeAt(d);
-            if (s > 127) break;
-            i[r + d] = s;
+            const c = n.charCodeAt(d);
+            if (c > 127) break;
+            i[r + d] = c;
         }
         if (d !== o) {
             d !== 0 && (n = n.slice(d)), r = e(r, o, o = d + n.length * 3, 1) >>> 0;
-            const s = A().subarray(r + d, r + o), w = j.encodeInto(n, s);
-            d += w.written, r = e(r, o, d, 1) >>> 0;
+            const c = A().subarray(r + d, r + o), l = q.encodeInto(n, c);
+            d += l.written, r = e(r, o, d, 1) >>> 0;
         }
         return b = d, r;
     }
     function u(n) {
-        const t = c(n);
-        return _e(n), t;
+        const t = s(n);
+        return ae(n), t;
     }
     let N = new TextDecoder("utf-8", {
         ignoreBOM: !0,
         fatal: !0
     });
     N.decode();
-    const oe = 2146435072;
-    let R = 0;
-    function ie(n, t) {
-        return R += t, R >= oe && (N = new TextDecoder("utf-8", {
+    const de = 2146435072;
+    let B = 0;
+    function se(n, t) {
+        return B += t, B >= de && (N = new TextDecoder("utf-8", {
             ignoreBOM: !0,
             fatal: !0
-        }), N.decode(), R = t), N.decode(A().subarray(n, n + t));
+        }), N.decode(), B = t), N.decode(A().subarray(n, n + t));
     }
-    const j = new TextEncoder;
-    "encodeInto" in j || (j.encodeInto = function(n, t) {
-        const e = j.encode(n);
+    const q = new TextEncoder;
+    "encodeInto" in q || (q.encodeInto = function(n, t) {
+        const e = q.encode(n);
         return t.set(e), {
             read: n.length,
             written: e.length
         };
     });
     let b = 0, _;
-    function ae(n) {
+    function ce(n) {
         _ = n;
     }
     URL = globalThis.URL;
-    const de = await H({
+    const ue = await G({
         "./wasm_bg.js": {
-            __wbindgen_object_clone_ref: ne,
-            __wbindgen_object_drop_ref: re,
-            __wbg_get_unchecked_17f53dad852b9588: It,
-            __wbg_set_3bf1de9fab0cd644: Qt,
-            __wbg_length_3d4ecd04bd8d22f1: Nt,
-            __wbg_set_fde2cec06c23692b: Ht,
-            __wbg_entries_2bf997cf82353e47: lt,
-            __wbg_next_0340c4ae324393c3: Pt,
-            __wbg_instanceof_Object_7c99480a1cdfb911: At,
-            __wbg_instanceof_Map_1b76fd4635be43eb: St,
-            __wbg_done_9158f7cc8751ba32: wt,
-            __wbg_value_ee3a06f4579184fa: Yt,
-            __wbg_keys_2fd1bfdda7e278ca: Mt,
-            __wbg_new_227d7c05414eb861: Bt,
-            __wbg_stack_3b0d974bbf31e44f: Xt,
-            __wbg_error_a6fa202b58aa1cd3: mt,
-            __wbg_get_with_ref_key_6412cf3094599694: xt,
-            __wbg_set_6be42768c690e380: Kt,
-            __wbg_get_8360291721e2339f: kt,
-            __wbg_String_8564e559799eccda: Y,
-            __wbg_get_with_ref_key_f64427178466f623: Ct,
-            __wbg_String_b51de6b05a10845b: G,
-            __wbg_getRandomValues_3f44b700395062e5: ht,
-            __wbg_new_from_slice_b5ea43e23f6008c0: Jt,
-            __wbg_new_0c7403db6e782f19: Tt,
-            __wbg_length_9f1775224cf1d815: Rt,
-            __wbg_prototypesetcall_a6b02eb00b0f4ce2: Wt,
-            __wbg_call_14b169f759b26747: ft,
-            __wbg_instanceof_Uint8Array_152ba1f289edcf3f: Ft,
-            __wbg_instanceof_ArrayBuffer_7c8433c6ed14ffe3: Et,
-            __wbg_new_34d45cc8e36aaead: Ut,
-            __wbg_new_682678e2f47e32bc: $t,
-            __wbg_from_0dbf29f09e7fb200: yt,
-            __wbg_isArray_c3109d14ffc06469: jt,
-            __wbg_new_5e360d2ff7b9e1c3: Lt,
-            __wbg_isSafeInteger_4fc213d1989d6d2a: qt,
-            __wbg_new_aa8d0fa9762c29bd: Dt,
-            __wbg_entries_e0b73aa8571ddb56: pt,
-            __wbg_iterator_013bc09ec998c2a7: Ot,
-            __wbg_get_1affdbdd5573b16a: vt,
-            __wbg_set_022bee52d0b05b19: zt,
-            __wbg_next_7646edaa39458ef7: Vt,
-            __wbg___wbindgen_in_a5d8b22e52b24dd1: nt,
-            __wbg___wbindgen_throw_6b64449b9b9ed33c: bt,
-            __wbg___wbindgen_is_null_52ff4ec04186736f: ot,
-            __wbg___wbindgen_jsval_eq_d3465d8a07697228: st,
-            __wbg_Error_960c155d3d49e4c2: X,
-            __wbg___wbindgen_is_bigint_ec25c7f91b4d9e93: rt,
-            __wbg___wbindgen_is_object_63322ec0cd6ea4ef: it,
-            __wbg___wbindgen_is_string_6df3bf7ef1164ed3: at,
-            __wbg___wbindgen_number_get_c7f42aed0525c451: ut,
-            __wbg___wbindgen_string_get_7ed5322991caaec5: gt,
-            __wbg___wbindgen_boolean_get_6ea149f0a8dcc5ff: tt,
-            __wbg___wbindgen_is_function_3baa9db1a987f47d: _t,
-            __wbg___wbindgen_is_undefined_29a43b4d42920abd: dt,
-            __wbg___wbindgen_jsval_loose_eq_cac3565e89b4134c: ct,
-            __wbg___wbindgen_bigint_get_as_i64_3d3aba5d616c6a51: Z,
-            __wbg___wbindgen_debug_string_ab4b34d23d6778bd: et,
-            __wbindgen_cast_0000000000000001: Gt,
-            __wbindgen_cast_0000000000000002: Zt,
-            __wbindgen_cast_0000000000000003: te,
-            __wbindgen_cast_0000000000000004: ee
+            __wbindgen_object_clone_ref: oe,
+            __wbindgen_object_drop_ref: ie,
+            __wbg_get_unchecked_17f53dad852b9588: Et,
+            __wbg_set_3bf1de9fab0cd644: Xt,
+            __wbg_length_3d4ecd04bd8d22f1: Bt,
+            __wbg_set_fde2cec06c23692b: Gt,
+            __wbg_entries_2bf997cf82353e47: yt,
+            __wbg_next_0340c4ae324393c3: Wt,
+            __wbg_instanceof_Object_7c99480a1cdfb911: qt,
+            __wbg_instanceof_Map_1b76fd4635be43eb: jt,
+            __wbg_done_9158f7cc8751ba32: mt,
+            __wbg_value_ee3a06f4579184fa: te,
+            __wbg_keys_2fd1bfdda7e278ca: Tt,
+            __wbg_new_227d7c05414eb861: $t,
+            __wbg_stack_3b0d974bbf31e44f: Zt,
+            __wbg_error_a6fa202b58aa1cd3: vt,
+            __wbg_get_with_ref_key_6412cf3094599694: St,
+            __wbg_set_6be42768c690e380: Yt,
+            __wbg_get_8360291721e2339f: Ct,
+            __wbg_String_8564e559799eccda: tt,
+            __wbg_get_with_ref_key_f64427178466f623: Ft,
+            __wbg_String_b51de6b05a10845b: et,
+            __wbg_getRandomValues_3f44b700395062e5: It,
+            __wbg_new_from_slice_b5ea43e23f6008c0: Qt,
+            __wbg_new_0c7403db6e782f19: Lt,
+            __wbg_length_9f1775224cf1d815: Ut,
+            __wbg_prototypesetcall_a6b02eb00b0f4ce2: Kt,
+            __wbg_call_14b169f759b26747: pt,
+            __wbg_instanceof_Uint8Array_152ba1f289edcf3f: Ot,
+            __wbg_instanceof_ArrayBuffer_7c8433c6ed14ffe3: At,
+            __wbg_new_34d45cc8e36aaead: Dt,
+            __wbg_new_682678e2f47e32bc: Vt,
+            __wbg_from_0dbf29f09e7fb200: kt,
+            __wbg_isArray_c3109d14ffc06469: Mt,
+            __wbg_new_5e360d2ff7b9e1c3: Pt,
+            __wbg_isSafeInteger_4fc213d1989d6d2a: Rt,
+            __wbg_new_aa8d0fa9762c29bd: Jt,
+            __wbg_entries_e0b73aa8571ddb56: ht,
+            __wbg_iterator_013bc09ec998c2a7: Nt,
+            __wbg_get_1affdbdd5573b16a: xt,
+            __wbg_set_022bee52d0b05b19: Ht,
+            __wbg_next_7646edaa39458ef7: zt,
+            __wbg___wbindgen_in_a5d8b22e52b24dd1: ot,
+            __wbg___wbindgen_throw_6b64449b9b9ed33c: wt,
+            __wbg___wbindgen_is_null_52ff4ec04186736f: dt,
+            __wbg___wbindgen_jsval_eq_d3465d8a07697228: gt,
+            __wbg_Error_960c155d3d49e4c2: Z,
+            __wbg___wbindgen_is_bigint_ec25c7f91b4d9e93: it,
+            __wbg___wbindgen_is_object_63322ec0cd6ea4ef: st,
+            __wbg___wbindgen_is_string_6df3bf7ef1164ed3: ct,
+            __wbg___wbindgen_number_get_c7f42aed0525c451: ft,
+            __wbg___wbindgen_string_get_7ed5322991caaec5: lt,
+            __wbg___wbindgen_boolean_get_6ea149f0a8dcc5ff: rt,
+            __wbg___wbindgen_is_function_3baa9db1a987f47d: at,
+            __wbg___wbindgen_is_undefined_29a43b4d42920abd: ut,
+            __wbg___wbindgen_jsval_loose_eq_cac3565e89b4134c: bt,
+            __wbg___wbindgen_bigint_get_as_i64_3d3aba5d616c6a51: nt,
+            __wbg___wbindgen_debug_string_ab4b34d23d6778bd: _t,
+            __wbindgen_cast_0000000000000001: ee,
+            __wbindgen_cast_0000000000000002: ne,
+            __wbindgen_cast_0000000000000003: re,
+            __wbindgen_cast_0000000000000004: _e
         }
-    }, K), { memory: se, __wbg_document_free: ce, __wbg_quill_free: ue, document_blueprintInstruction: ge, document_cardCount: be, document_cards: fe, document_clone: we, document_currentSchemaVersion: le, document_equals: pe, document_formatDiagnostic: me, document_formatRules: ye, document_fromJson: he, document_fromMarkdown: ve, document_insertCard: ke, document_main: Ie, document_makeCard: xe, document_moveCard: Ce, document_pushCard: Ee, document_quillRef: Se, document_quillRefHint: Ae, document_removeCard: Fe, document_removeCardExt: je, document_removeCardExtNamespace: qe, document_removeCardField: Oe, document_removeExt: Me, document_removeExtNamespace: Ne, document_removeField: Re, document_replaceBody: Te, document_schemaVersionOf: Be, document_setCardExt: Ue, document_setCardExtNamespace: Le, document_setCardKind: $e, document_setExt: De, document_setExtNamespace: Je, document_setField: Pe, document_setFill: Ve, document_setQuillRef: We, document_toJson: ze, document_toMarkdown: Qe, document_tryFromJson: Ke, document_updateCardBody: He, document_updateCardField: Xe, document_warnings: Ye, init: Ge, quill_backendId: Ze, quill_blueprint: tn, quill_fromTree: en, quill_metadata: nn, quill_schema: rn, quill_seedCard: _n, quill_seedDocument: on, quill_seedMain: an, quill_toTree: dn, quill_validate: sn, __wbindgen_export: cn, __wbindgen_export2: un, __wbindgen_export3: gn, __wbindgen_export4: bn, __wbindgen_add_to_stack_pointer: fn, __wbindgen_start: J } = de, wn = Object.freeze(Object.defineProperty({
+    }, Y), { memory: ge, __wbg_document_free: be, __wbg_quill_free: fe, document_blueprintInstruction: le, document_cardCount: we, document_cards: pe, document_clone: me, document_currentSchemaVersion: ye, document_equals: he, document_formatDiagnostic: ve, document_formatRules: ke, document_fromJson: Ie, document_fromMarkdown: xe, document_insertCard: Ce, document_main: Ee, document_makeCard: Se, document_moveCard: Fe, document_pushCard: Ae, document_quillRef: je, document_quillRefHint: qe, document_removeCard: Oe, document_removeCardExt: Me, document_removeCardExtNamespace: Re, document_removeCardField: Ne, document_removeExt: Te, document_removeExtNamespace: Be, document_removeField: Ue, document_replaceBody: Le, document_schemaVersionOf: $e, document_setCardExt: De, document_setCardExtNamespace: Pe, document_setCardKind: Ve, document_setExt: Je, document_setExtNamespace: Qe, document_setField: We, document_setFill: ze, document_setQuillRef: Ke, document_toJson: He, document_toMarkdown: Xe, document_tryFromJson: Ye, document_updateCardBody: Ge, document_updateCardField: Ze, document_warnings: tn, init: en, quill_backendId: nn, quill_blueprint: rn, quill_fromTree: _n, quill_metadata: on, quill_schema: an, quill_seedCard: dn, quill_seedDocument: sn, quill_seedMain: cn, quill_toTree: un, quill_validate: gn, __wbindgen_export: bn, __wbindgen_export2: fn, __wbindgen_export3: ln, __wbindgen_export4: wn, __wbindgen_add_to_stack_pointer: pn, __wbindgen_start: W } = ue, mn = Object.freeze(Object.defineProperty({
         __proto__: null,
-        __wbg_document_free: ce,
-        __wbg_quill_free: ue,
-        __wbindgen_add_to_stack_pointer: fn,
-        __wbindgen_export: cn,
-        __wbindgen_export2: un,
-        __wbindgen_export3: gn,
-        __wbindgen_export4: bn,
-        __wbindgen_start: J,
-        document_blueprintInstruction: ge,
-        document_cardCount: be,
-        document_cards: fe,
-        document_clone: we,
-        document_currentSchemaVersion: le,
-        document_equals: pe,
-        document_formatDiagnostic: me,
-        document_formatRules: ye,
-        document_fromJson: he,
-        document_fromMarkdown: ve,
-        document_insertCard: ke,
-        document_main: Ie,
-        document_makeCard: xe,
-        document_moveCard: Ce,
-        document_pushCard: Ee,
-        document_quillRef: Se,
-        document_quillRefHint: Ae,
-        document_removeCard: Fe,
-        document_removeCardExt: je,
-        document_removeCardExtNamespace: qe,
-        document_removeCardField: Oe,
-        document_removeExt: Me,
-        document_removeExtNamespace: Ne,
-        document_removeField: Re,
-        document_replaceBody: Te,
-        document_schemaVersionOf: Be,
-        document_setCardExt: Ue,
-        document_setCardExtNamespace: Le,
-        document_setCardKind: $e,
-        document_setExt: De,
-        document_setExtNamespace: Je,
-        document_setField: Pe,
-        document_setFill: Ve,
-        document_setQuillRef: We,
-        document_toJson: ze,
-        document_toMarkdown: Qe,
-        document_tryFromJson: Ke,
-        document_updateCardBody: He,
-        document_updateCardField: Xe,
-        document_warnings: Ye,
-        init: Ge,
-        memory: se,
-        quill_backendId: Ze,
-        quill_blueprint: tn,
-        quill_fromTree: en,
-        quill_metadata: nn,
-        quill_schema: rn,
-        quill_seedCard: _n,
-        quill_seedDocument: on,
-        quill_seedMain: an,
-        quill_toTree: dn,
-        quill_validate: sn
+        __wbg_document_free: be,
+        __wbg_quill_free: fe,
+        __wbindgen_add_to_stack_pointer: pn,
+        __wbindgen_export: bn,
+        __wbindgen_export2: fn,
+        __wbindgen_export3: ln,
+        __wbindgen_export4: wn,
+        __wbindgen_start: W,
+        document_blueprintInstruction: le,
+        document_cardCount: we,
+        document_cards: pe,
+        document_clone: me,
+        document_currentSchemaVersion: ye,
+        document_equals: he,
+        document_formatDiagnostic: ve,
+        document_formatRules: ke,
+        document_fromJson: Ie,
+        document_fromMarkdown: xe,
+        document_insertCard: Ce,
+        document_main: Ee,
+        document_makeCard: Se,
+        document_moveCard: Fe,
+        document_pushCard: Ae,
+        document_quillRef: je,
+        document_quillRefHint: qe,
+        document_removeCard: Oe,
+        document_removeCardExt: Me,
+        document_removeCardExtNamespace: Re,
+        document_removeCardField: Ne,
+        document_removeExt: Te,
+        document_removeExtNamespace: Be,
+        document_removeField: Ue,
+        document_replaceBody: Le,
+        document_schemaVersionOf: $e,
+        document_setCardExt: De,
+        document_setCardExtNamespace: Pe,
+        document_setCardKind: Ve,
+        document_setExt: Je,
+        document_setExtNamespace: Qe,
+        document_setField: We,
+        document_setFill: ze,
+        document_setQuillRef: Ke,
+        document_toJson: He,
+        document_toMarkdown: Xe,
+        document_tryFromJson: Ye,
+        document_updateCardBody: Ge,
+        document_updateCardField: Ze,
+        document_warnings: tn,
+        init: en,
+        memory: ge,
+        quill_backendId: nn,
+        quill_blueprint: rn,
+        quill_fromTree: _n,
+        quill_metadata: on,
+        quill_schema: an,
+        quill_seedCard: dn,
+        quill_seedDocument: sn,
+        quill_seedMain: cn,
+        quill_toTree: un,
+        quill_validate: gn
     }, Symbol.toStringTag, {
         value: "Module"
     }));
-    ae(wn);
-    J();
-    const ln = {
+    ce(mn);
+    W();
+    const yn = {
         typst: {
-            load: ()=>Q(()=>import("./wasm-OoL1PHSA.js").then(async (m)=>{
+            load: ()=>X(()=>import("./wasm-B2ObiRFv.js").then(async (m)=>{
                         await m.__tla;
                         return m;
                     }), [], import.meta.url),
@@ -1142,7 +1142,7 @@ ${n.stack}` : o;
             canvas: !0
         }
     };
-    function pn(n, t) {
+    function hn(n, t) {
         if (!t || typeof t != "object") throw new Error(`Engine: backend '${n}' must be a descriptor { load, formats, canvas }.`);
         const { load: e, formats: o, canvas: r } = t;
         if (typeof e != "function") throw new Error(`Engine: backend '${n}' descriptor needs a callable 'load'.`);
@@ -1154,17 +1154,17 @@ ${n.stack}` : o;
             canvas: r
         };
     }
-    class mn {
+    class vn {
         #t = new Map;
         #r = new Map;
         #e;
         #_ = new Map;
         constructor(t){
             const e = {
-                ...ln,
+                ...yn,
                 ...t?.backends ?? {}
             }, o = {};
-            for (const [r, i] of Object.entries(e))o[r] = pn(r, i);
+            for (const [r, i] of Object.entries(e))o[r] = hn(r, i);
             this.#e = o;
         }
         #n(t) {
@@ -1192,24 +1192,24 @@ ${n.stack}` : o;
             return i || (i = t.Quill.fromTree(o.toTree()), r.set(o, i)), i;
         }
         async #o(t, e, o, r) {
-            const { mod: i, engine: d } = await this.#i(t), s = this.#a(i, t, e);
-            let w = null;
+            const { mod: i, engine: d } = await this.#i(t), c = this.#a(i, t, e);
+            let l = null;
             try {
-                return w = i.Document.fromJson(o.toJson()), r({
+                return l = i.Document.fromJson(o.toJson()), r({
                     mod: i,
                     engine: d,
-                    quill: s,
-                    doc: w
+                    quill: c,
+                    doc: l
                 });
             } finally{
-                w?.free();
+                l?.free();
             }
         }
         async render(t, e, o) {
             return this.#o(t.backendId, t, e, ({ engine: r, quill: i, doc: d })=>r.render(i, d, o ?? void 0));
         }
         async open(t, e) {
-            return this.#o(t.backendId, t, e, ({ engine: o, quill: r, doc: i })=>new yn(o.open(r, i)));
+            return this.#o(t.backendId, t, e, ({ engine: o, quill: r, doc: i })=>new kn(o.open(r, i)));
         }
         async supportedFormats(t) {
             return this.#n(t.backendId).formats.slice();
@@ -1218,7 +1218,7 @@ ${n.stack}` : o;
             return this.#n(t.backendId).canvas;
         }
     }
-    class yn {
+    class kn {
         constructor(t){
             this.#t = t;
         }
@@ -1248,7 +1248,9 @@ ${n.stack}` : o;
             this.#t.free();
         }
     }
-    function hn(n) {
+    let m = null;
+    const $ = new vn;
+    function In(n) {
         const t = {};
         for (const [e, o] of Object.entries(n)){
             const r = atob(o), i = new Uint8Array(r.length);
@@ -1257,63 +1259,146 @@ ${n.stack}` : o;
         }
         return t;
     }
-    function vn(n) {
+    function xn(n) {
         let t = "";
         for(let o = 0; o < n.length; o += 32768)t += String.fromCharCode.apply(null, n.subarray(o, o + 32768));
         return btoa(t);
     }
-    function P(n) {
+    function T(n) {
         return Array.isArray(n) ? n.map((t)=>({
-                severity: t.severity,
-                message: t.message,
-                code: t.code,
-                location: t.location
+                severity: t.severity ?? null,
+                code: t.code ?? null,
+                message: t.message ?? null,
+                location: t.location ?? null,
+                path: t.path ?? null,
+                hint: t.hint ?? null
             })) : [];
     }
-    async function V(n, t = {}) {
-        const e = hn(n), o = C.fromTree(e), r = t.markdown != null && t.markdown !== "" ? m.fromMarkdown(t.markdown) : o.seedDocument(), d = await new mn().render(o, r, {
-            format: t.format || "pdf"
-        });
+    function D() {
+        if (!m) throw new Error("No quill loaded (send a loadQuill request first).");
+    }
+    function z(n) {
+        return n != null && n !== "" ? y.fromMarkdown(n) : m.seedDocument();
+    }
+    async function Cn(n) {
+        m = E.fromTree(In(n.tree));
+        const t = await $.supportedFormats(m);
         return {
-            metadata: o.metadata,
-            outputFormat: d.outputFormat,
-            renderTimeMs: d.renderTimeMs,
-            warnings: P(d.warnings),
-            artifacts: d.artifacts.map((s)=>({
-                    format: s.format,
-                    mimeType: s.mimeType,
-                    length: s.bytes.length,
-                    base64: vn(s.bytes)
-                }))
+            id: n.id,
+            ok: !0,
+            kind: "quill",
+            metadata: m.metadata,
+            schema: m.schema,
+            blueprint: m.blueprint,
+            supportedFormats: t
         };
     }
-    window.renderQuill = V;
-    window.__bridgeReady = !0;
-    window.chrome?.webview && (window.chrome.webview.addEventListener("message", async (n)=>{
-        const t = n.data;
+    async function En(n) {
+        D();
+        const t = z(n.markdown), e = await $.render(m, t, {
+            format: n.format || "pdf"
+        });
+        return {
+            id: n.id,
+            ok: !0,
+            kind: "render",
+            result: {
+                outputFormat: e.outputFormat,
+                renderTimeMs: e.renderTimeMs,
+                warnings: T(e.warnings),
+                artifacts: e.artifacts.map((o)=>({
+                        format: o.format,
+                        mimeType: o.mimeType,
+                        length: o.bytes.length,
+                        base64: xn(o.bytes)
+                    }))
+            }
+        };
+    }
+    function Sn(n) {
+        D();
+        let t;
         try {
-            const e = await V(t.tree, t.opts || {});
-            window.chrome.webview.postMessage(JSON.stringify({
-                id: t.id,
-                ok: !0,
-                result: e
-            }));
+            t = z(n.markdown);
         } catch (e) {
-            window.chrome.webview.postMessage(JSON.stringify({
-                id: t?.id,
-                ok: !1,
-                error: String(e?.message || e),
-                diagnostics: P(e?.diagnostics)
-            }));
+            const o = e?.diagnostics?.length ? e.diagnostics : [
+                {
+                    severity: "error",
+                    message: String(e?.message || e)
+                }
+            ];
+            return {
+                id: n.id,
+                ok: !0,
+                kind: "validate",
+                diagnostics: T(o)
+            };
         }
-    }), window.addEventListener("unhandledrejection", (n)=>window.chrome.webview.postMessage(JSON.stringify({
-            type: "error",
-            error: "unhandledrejection: " + String(n.reason?.message || n.reason)
-        }))), window.addEventListener("error", (n)=>window.chrome.webview.postMessage(JSON.stringify({
-            type: "error",
-            error: "error: " + String(n.message)
-        }))), window.chrome.webview.postMessage(JSON.stringify({
-        type: "ready"
-    })));
+        return {
+            id: n.id,
+            ok: !0,
+            kind: "validate",
+            diagnostics: T(m.validate(t))
+        };
+    }
+    async function Fn(n) {
+        D();
+        const t = await $.supportedFormats(m);
+        return {
+            id: n.id,
+            ok: !0,
+            kind: "info",
+            metadata: m.metadata,
+            schema: m.schema,
+            blueprint: m.blueprint,
+            supportedFormats: t
+        };
+    }
+    if (window.chrome?.webview) {
+        const n = (t)=>window.chrome.webview.postMessage(JSON.stringify(t));
+        window.chrome.webview.addEventListener("message", async (t)=>{
+            const e = t.data, o = e?.id;
+            try {
+                let r;
+                switch(e?.type){
+                    case "loadQuill":
+                        r = await Cn(e);
+                        break;
+                    case "render":
+                        r = await En(e);
+                        break;
+                    case "validate":
+                        r = Sn(e);
+                        break;
+                    case "info":
+                        r = await Fn(e);
+                        break;
+                    default:
+                        r = {
+                            id: o,
+                            ok: !1,
+                            error: "unknown request type: " + e?.type
+                        };
+                }
+                n(r);
+            } catch (r) {
+                n({
+                    id: o,
+                    ok: !1,
+                    error: String(r?.message || r),
+                    diagnostics: T(r?.diagnostics)
+                });
+            }
+        }), window.addEventListener("unhandledrejection", (t)=>n({
+                type: "error",
+                error: "unhandledrejection: " + String(t.reason?.message || t.reason)
+            })), window.addEventListener("error", (t)=>n({
+                type: "error",
+                error: "error: " + String(t.message)
+            })), n({
+            type: "ready"
+        });
+    }
+    window.__bridgeReady = !0;
 })();
-export { H as _, __tla };
+export { G as _, __tla };

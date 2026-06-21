@@ -28,36 +28,88 @@ Everything else (the managed WebView2 DLLs, the per-architecture native
 Import-Module .\posh-wasm.psd1
 ```
 
-## Usage
+> The primary cmdlet uses the verb `Render`, which isn't on PowerShell's approved
+> list, so import prints an "unapproved verbs" warning. This is intentional (it
+> mirrors quillmark's Python `render`). Suppress it with
+> `Import-Module .\posh-wasm.psd1 -DisableNameChecking`.
+
+## Cmdlets
+
+The surface mirrors quillmark's Python API:
+
+| Cmdlet | Python parallel | Purpose |
+|---|---|---|
+| `Render-QuillDocument` | `engine.render(quill, doc, fmt)` | render document(s) to file(s) |
+| `Get-Quill` | `Quill.from_path` + `.metadata`/`.schema`/`.blueprint` + `supported_formats` | inspect a quill |
+| `Test-QuillDocument` | `quill.validate(doc)` | validate without rendering |
+
+`Invoke-QuillRender` is kept as a back-compat alias of `Render-QuillDocument`.
+
+### Usage
 
 ```powershell
 # Render a quill's seeded starter document to PDF
-Invoke-QuillRender -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
+Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
 
 # Render your own markdown document
-Invoke-QuillRender -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf -MarkdownPath .\doc.md
+Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf -MarkdownPath .\doc.md
 
 # SVG / PNG (one artifact per page -> memo-1.svg, memo-2.svg, ...)
-Invoke-QuillRender -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.svg -Format svg
+Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.svg -Format svg
+
+# BULK: pipe many files; ONE WebView2 host is warmed and reused for all of them
+Get-ChildItem .\inbox\*.md |
+    Render-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputDirectory .\out
+
+# Validate a whole batch (fail fast) before rendering
+Get-ChildItem .\inbox\*.md |
+    Test-QuillDocument -QuillPath .\usaf_memo\0.2.0 |
+    Where-Object { -not $_.IsValid }
+
+# Inspect a quill: formats, fields to fill, blueprint
+$q = Get-Quill .\usaf_memo\0.2.0
+$q.SupportedFormats                       # pdf, svg, png
+$q.Fields | Where-Object { -not $_.HasDefault }   # fields you must fill
 ```
 
-### `Invoke-QuillRender`
+### Bulk performance (no session to manage)
 
-| Parameter | Required | Description |
-|---|---|---|
-| `-QuillPath` | yes | Path to the quill version directory (the folder with `Quill.yaml`). |
-| `-OutputPath` | yes | Output file path. Multi-artifact formats write `<base>-N.<ext>` next to it. |
-| `-Format` | no | `pdf` (default), `svg`, or `png`. |
-| `-Markdown` | no | Markdown content to render. Mutually exclusive with `-MarkdownPath`. |
-| `-MarkdownPath` | no | Path to a markdown file to render. |
-| `-TimeoutSeconds` | no | Max wait for the render (default 120). |
+The 28 MB WASM load is the dominant cost. A render host is warmed **once per
+pipeline invocation** and reused for every piped item, then disposed — so a
+batch pays the load once with no session object to open or close. (In a quick
+run, the first render took ~390 ms and subsequent ones ~50–70 ms each.)
 
-If neither `-Markdown` nor `-MarkdownPath` is given, the quill's
-`seedDocument()` starter is rendered.
+### `Render-QuillDocument`
 
-Returns an object with `OutputFiles`, `Format`, `ArtifactCount`, `RenderTimeMs`,
-`Warnings`, and `QuillName`. Non-fatal diagnostics surface as PowerShell warnings;
-render errors throw and emit the quill's diagnostics as PowerShell errors.
+| Parameter | Description |
+|---|---|
+| `-QuillPath` *(required)* | Quill version directory (folder with `Quill.yaml`). |
+| `-MarkdownPath` | Markdown file to render. **Accepts pipeline input** (incl. `Get-ChildItem` `FullName`). |
+| `-Markdown` | Inline markdown content. |
+| `-OutputPath` | Output file for a single render (`<base>-N.<ext>` for multi-page). |
+| `-OutputDirectory` | Output folder for bulk; each output is named from its input file. |
+| `-Format` | `pdf` (default), `svg`, `png`. |
+| `-TimeoutSeconds` | Per-render / warm-up timeout (default 120). |
+
+With no markdown, the quill's seeded starter document is rendered. Emits a result
+object per render (`Source`, `OutputFiles`, `Format`, `ArtifactCount`,
+`RenderTimeMs`, `Warnings`, `QuillName`). Warnings surface as PowerShell warnings;
+a failed item writes an error and the pipeline continues.
+
+### `Get-Quill`
+
+Returns one object per quill. Default view shows `Name`, `Version`, `Backend`,
+`SupportedFormats`, `Description`; the full object also carries `QuillRef`,
+`Author`, `Path`, `Fields` (projected `Name`/`Type`/`HasDefault`/`Default`/
+`Example`/`Enum`/`Group`/`Description`), `CardKinds`, `Schema` (raw), and
+`Blueprint` (starter markdown).
+
+### `Test-QuillDocument`
+
+Returns `Source`, `IsValid`, `ErrorCount`, `WarningCount`, `AbsentFields`, and the
+full `Diagnostics` list. `IsValid` mirrors **renderability**: the non-fatal
+`validation::field_absent` completeness signal (which the renderer zero-fills)
+doesn't make a document invalid — those fields are listed in `AbsentFields`.
 
 ## Rebuilding the bundle (developers only)
 
@@ -76,9 +128,12 @@ npx vite build   # emits ../dist (index.html + JS + 2x .wasm, ~28 MB)
 ## How it works
 
 1. PowerShell walks `-QuillPath` into a `{ "relative/path": base64 }` tree.
-2. It hosts a hidden WinForms WebView2 control and maps the bundled `dist/`
+2. It hosts a hidden WinForms WebView2 control on a dedicated STA runspace
+   (so it works from both STA and MTA hosts) and maps the bundled `dist/`
    folder to a virtual host (`https://posh-wasm.local/`) — served offline, no
    web server.
-3. It posts `{ id, tree, opts }` to the page; the JS bridge calls
-   `Quill.fromTree` + `Engine().render` and posts artifacts (base64) back.
-4. PowerShell decodes and writes the output file(s).
+3. It sends one `loadQuill` message so the bridge builds and caches the `Quill`
+   once, then issues atomic `render` / `validate` / `info` requests against it.
+   The bridge replies with artifact bytes (base64), diagnostics, or metadata.
+4. PowerShell decodes and writes the output file(s). The host lives for one
+   pipeline invocation and is disposed at the end.

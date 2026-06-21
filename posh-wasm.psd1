@@ -13,10 +13,10 @@
     # .NET FW 4.6.2 and load under Windows PowerShell 5.1 and PowerShell 7 on Windows).
     CompatiblePSEditions = @('Desktop', 'Core')
 
-    FunctionsToExport = @('Invoke-QuillRender')
+    FunctionsToExport = @('Render-QuillDocument', 'Get-Quill', 'Test-QuillDocument')
     CmdletsToExport   = @()
     VariablesToExport = @()
-    AliasesToExport   = @()
+    AliasesToExport   = @('Invoke-QuillRender')
 
     # Files that ship with the module (assets are loaded at runtime, not dot-sourced).
     FileList = @(
