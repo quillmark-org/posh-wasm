@@ -28,10 +28,10 @@ public static extern System.IntPtr LoadLibrary(string lpFileName);
 '@
 }
 
-# Lets -QuillPath accept a quill OBJECT from Get-Quill (or its catalog), not just
+# Lets -Quill accept a quill OBJECT from Get-Quill (or its catalog), not just
 # a string: any non-string object that has a .Path property is unwrapped to that
-# path. Strings pass through untouched, so `-QuillPath usaf_memo` and
-# `-QuillPath (Get-Quill usaf_memo)` both work. Defined via Add-Type (a compiled
+# path. Strings pass through untouched, so `-Quill usaf_memo` and
+# `-Quill (Get-Quill usaf_memo)` both work. Defined via Add-Type (a compiled
 # type) because a PowerShell `class` can't be used as an attribute in its own module.
 if (-not ('PoshWasm.QuillPathTransformAttribute' -as [type])) {
     Add-Type -ReferencedAssemblies ([psobject].Assembly.Location) -TypeDefinition @'
@@ -458,8 +458,9 @@ function Export-QuillDocument {
         whole pipeline and reused for every item, so the 28 MB WASM load is paid
         once. With no markdown supplied, the quill's seeded starter document is
         rendered.
-    .PARAMETER QuillPath
-        Path to the quill version directory (the folder containing Quill.yaml).
+    .PARAMETER Quill
+        The quill to render with: a bundled quill name (e.g. usaf_memo), a path to
+        a quill directory, or a quill object from Get-Quill. (Alias: QuillPath.)
     .PARAMETER MarkdownPath
         Path to a markdown file to render. Accepts pipeline input (including
         Get-ChildItem FileInfo via its FullName).
@@ -477,12 +478,12 @@ function Export-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request timeout (also the host warm-up timeout). Default 120.
     .EXAMPLE
-        Export-QuillDocument -QuillPath usaf_memo
+        Export-QuillDocument -Quill usaf_memo
         # -> .\usaf_memo.pdf in the current directory
     .EXAMPLE
-        Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
+        Export-QuillDocument -Quill usaf_memo -OutputPath .\memo.pdf
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath usaf_memo -OutputDirectory .\out
+        Get-ChildItem .\inbox\*.md | Export-QuillDocument -Quill usaf_memo -OutputDirectory .\out
     #>
     [CmdletBinding(DefaultParameterSetName = 'ToPath')]
     [OutputType([PSCustomObject])]
@@ -490,8 +491,9 @@ function Export-QuillDocument {
     param(
         [Parameter(Mandatory)]
         [PoshWasm.QuillPathTransformAttribute()]
+        [Alias('QuillPath')]
         [ValidateNotNullOrEmpty()]
-        [string]$QuillPath,
+        [string]$Quill,
 
         [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('FullName', 'Path')]
@@ -523,7 +525,7 @@ function Export-QuillDocument {
         if ($mode -eq 'dir' -and -not $PSBoundParameters.ContainsKey('OutputDirectory')) {
             $OutputDirectory = (Get-Location).Path
         }
-        $qhost = Open-QuillHost -QuillPath $QuillPath -TimeoutSeconds $TimeoutSeconds
+        $qhost = Open-QuillHost -QuillPath $Quill -TimeoutSeconds $TimeoutSeconds
         $itemCount = 0
     }
 
@@ -592,17 +594,17 @@ function Get-Quill {
     .SYNOPSIS
         Inspect a quill: identity, supported formats, fields, schema, blueprint.
     .DESCRIPTION
-        With no -QuillPath, lists the quills bundled with the module (a cheap
+        With no -Quill, lists the quills bundled with the module (a cheap
         catalog: Name/Version/Backend/Description, read from each Quill.yaml).
 
-        With a -QuillPath (a bundled quill name or a directory), loads that quill
+        With a -Quill (a bundled quill name or a directory), loads that quill
         and returns a rich object: the default view shows
         Name/Version/Backend/SupportedFormats/Description, and the full object
         also carries Fields (a projected field table), CardKinds, Schema (raw),
         and Blueprint (starter markdown).
-    .PARAMETER QuillPath
+    .PARAMETER Quill
         Bundled quill name (e.g. usaf_memo) or path to a quill directory. Accepts
-        pipeline input. Omit to list the bundled quills.
+        pipeline input. Omit to list the bundled quills. (Alias: QuillPath.)
     .PARAMETER TimeoutSeconds
         Host warm-up timeout. Default 120.
     .EXAMPLE
@@ -617,8 +619,8 @@ function Get-Quill {
     param(
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [PoshWasm.QuillPathTransformAttribute()]
-        [Alias('FullName', 'Path')]
-        [string]$QuillPath,
+        [Alias('FullName', 'Path', 'QuillPath')]
+        [string]$Quill,
 
         [ValidateRange(1, 3600)]
         [int]$TimeoutSeconds = 120
@@ -626,7 +628,7 @@ function Get-Quill {
 
     process {
         # No quill specified -> emit the bundled catalog (cheap, no WebView2).
-        if ([string]::IsNullOrEmpty($QuillPath)) {
+        if ([string]::IsNullOrEmpty($Quill)) {
             foreach ($name in (Get-BundledQuillName)) {
                 $dir = Join-Path $script:QuillsDir $name
                 $id = Get-QuillIdentity -QuillDir $dir
@@ -643,7 +645,7 @@ function Get-Quill {
             return
         }
 
-        $qhost = Open-QuillHost -QuillPath $QuillPath -TimeoutSeconds $TimeoutSeconds
+        $qhost = Open-QuillHost -QuillPath $Quill -TimeoutSeconds $TimeoutSeconds
         try {
             $info = $qhost.Info
             $meta = $info.metadata
@@ -700,8 +702,9 @@ function Test-QuillDocument {
         IsValid mirrors renderability: the non-fatal completeness signal
         (validation::field_absent, which render zero-fills) does not make a
         document invalid - those absent fields are reported in AbsentFields.
-    .PARAMETER QuillPath
-        Path to the quill version directory.
+    .PARAMETER Quill
+        Bundled quill name, path to a quill directory, or a Get-Quill object.
+        (Alias: QuillPath.)
     .PARAMETER MarkdownPath
         Markdown file to validate. Accepts pipeline input.
     .PARAMETER Markdown
@@ -709,7 +712,7 @@ function Test-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request / warm-up timeout. Default 120.
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Test-QuillDocument -QuillPath usaf_memo |
+        Get-ChildItem .\inbox\*.md | Test-QuillDocument -Quill usaf_memo |
             Where-Object { -not $_.IsValid }
     #>
     [CmdletBinding()]
@@ -717,8 +720,9 @@ function Test-QuillDocument {
     param(
         [Parameter(Mandatory)]
         [PoshWasm.QuillPathTransformAttribute()]
+        [Alias('QuillPath')]
         [ValidateNotNullOrEmpty()]
-        [string]$QuillPath,
+        [string]$Quill,
 
         [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('FullName', 'Path')]
@@ -734,7 +738,7 @@ function Test-QuillDocument {
         if ($PSBoundParameters.ContainsKey('Markdown') -and $PSBoundParameters.ContainsKey('MarkdownPath')) {
             throw "Specify only one of -Markdown or -MarkdownPath."
         }
-        $qhost = Open-QuillHost -QuillPath $QuillPath -TimeoutSeconds $TimeoutSeconds
+        $qhost = Open-QuillHost -QuillPath $Quill -TimeoutSeconds $TimeoutSeconds
     }
 
     process {
@@ -783,7 +787,7 @@ function Test-QuillDocument {
     }
 }
 
-# Tab-complete -QuillPath with the bundled quill names (suggestions only; any
+# Tab-complete -Quill with the bundled quill names (suggestions only; any
 # path is still accepted). Module-scoped scriptblock, so $script:QuillsDir and
 # Get-BundledQuillName are in scope.
 $quillPathCompleter = {
@@ -792,6 +796,6 @@ $quillPathCompleter = {
         Where-Object { $_ -like "$wordToComplete*" } |
         ForEach-Object { [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_) }
 }
-Register-ArgumentCompleter -CommandName 'Export-QuillDocument', 'Get-Quill', 'Test-QuillDocument' -ParameterName 'QuillPath' -ScriptBlock $quillPathCompleter
+Register-ArgumentCompleter -CommandName 'Export-QuillDocument', 'Get-Quill', 'Test-QuillDocument' -ParameterName 'Quill' -ScriptBlock $quillPathCompleter
 
 Export-ModuleMember -Function Export-QuillDocument, Get-Quill, Test-QuillDocument -Alias Invoke-QuillRender

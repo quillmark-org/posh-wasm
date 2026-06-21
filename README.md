@@ -14,7 +14,7 @@ Maintained by [TTQ](https://tonguetoquill.com/).
 
 - Windows with **PowerShell 5.1 or 7**.
 - The **Microsoft Edge WebView2 Runtime** — already present on Windows 11 and any PC with a current version of Edge. (If it's missing, the command tells you and links the free installer.)
-- This module. It bundles the `usaf_memo` quill (the template) used in the examples — run `Get-Quill` to see all bundled quills, or point `-QuillPath` at your own quill folder.
+- This module. It bundles the `usaf_memo` quill (the template) used in the examples — run `Get-Quill` to see all bundled quills, or point `-Quill` at your own quill folder.
 
 ## Install
 
@@ -39,14 +39,14 @@ Import-Module .\posh-wasm\quillmark.psd1
 The `usaf_memo` quill is bundled, so this works right after install — it writes `usaf_memo.pdf` to the current folder:
 
 ```powershell
-Export-QuillDocument -QuillPath usaf_memo
+Export-QuillDocument -Quill usaf_memo
 ```
 
 Add `-OutputPath` to choose the file, list the bundled quills with `Get-Quill`, or use one of your own by passing a folder path:
 
 ```powershell
 Get-Quill                                                  # bundled quills
-Export-QuillDocument -QuillPath C:\quills\my_letter -OutputPath .\letter.pdf
+Export-QuillDocument -Quill C:\quills\my_letter -OutputPath .\letter.pdf
 ```
 
 ## Write your own memo
@@ -71,7 +71,7 @@ This is the first paragraph of the memo. Paragraphs are numbered automatically.
 Render it:
 
 ```powershell
-Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf -MarkdownPath .\my-memo.md
+Export-QuillDocument -Quill usaf_memo -OutputPath .\memo.pdf -MarkdownPath .\my-memo.md
 ```
 
 See **`memo_example.md`** in this repo for a complete, annotated memo.
@@ -92,7 +92,7 @@ This is the main event. Point a folder of memo files at a folder of PDFs — one
 
 ```powershell
 Get-ChildItem .\memos\*.md |
-    Export-QuillDocument -QuillPath usaf_memo -OutputDirectory .\out
+    Export-QuillDocument -Quill usaf_memo -OutputDirectory .\out
 ```
 
 The engine starts once and is reused for the whole batch, so large runs stay fast. Drop this into a script or a Scheduled Task for unattended generation.
@@ -101,7 +101,7 @@ The engine starts once and is reused for the whole batch, so large runs stay fas
 
 ```powershell
 Get-ChildItem .\memos\*.md |
-    Test-QuillDocument -QuillPath usaf_memo |
+    Test-QuillDocument -Quill usaf_memo |
     Where-Object { -not $_.IsValid }
 ```
 
