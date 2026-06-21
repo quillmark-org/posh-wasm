@@ -1,8 +1,8 @@
 # Third-Party Notices
 
-The `quillmark` module is licensed under Apache-2.0 (see `LICENSE`). It bundles
-and redistributes the following third-party components, each under its own
-license.
+The `quillmark` module is licensed under Apache-2.0 (see `LICENSE`). The
+**published Gallery package** bundles and redistributes the following two
+third-party components, each under its own license.
 
 ## Microsoft Edge WebView2
 
@@ -20,10 +20,11 @@ https://aka.ms/webview2/license
 Copyright (c) the Quillmark authors. Licensed under "MIT OR Apache-2.0".
 https://www.npmjs.com/package/@quillmark/wasm
 
-## usaf_memo sample quill
+## usaf_memo sample quill (repository only -- NOT in the published package)
 
-The bundled `usaf_memo/` sample quill includes fonts under their own licenses.
-Each font's license text ships alongside it under
+The `usaf_memo/` sample quill lives in the source repository for examples and
+tests; it is **excluded from the published Gallery package**. It includes fonts
+under their own licenses, with each font's license text alongside it under
 `usaf_memo/packages/tonguetoquill-usaf-memo/fonts/`:
 
 | Font | License (see the font's folder) |

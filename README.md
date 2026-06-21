@@ -12,7 +12,7 @@ Maintained by [TTQ](https://tonguetoquill.com/).
 
 - Windows with **PowerShell 5.1 or 7**.
 - The **Microsoft Edge WebView2 Runtime** — already present on Windows 11 and any PC with a current version of Edge. (If it's missing, the command tells you and links the free installer.)
-- This module, plus at least one quill. This repo ships the **`usaf_memo`** quill used in the examples below.
+- This module, plus a **quill** (the template). The examples use `usaf_memo`, a sample included in the **repo** — clone or download it to follow along, or point `-QuillPath` at your own quill. The Gallery package is the engine only; it doesn't bundle quills.
 
 ## Install
 
@@ -34,13 +34,19 @@ Import-Module .\posh-wasm\quillmark.psd1
 
 ## Make your first PDF
 
-Render the quill's built-in example so you can see the output right away:
+If you cloned or downloaded the repo, the `usaf_memo` sample renders right away (referenced by name from the repo folder):
 
 ```powershell
 Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
 ```
 
-`usaf_memo` ships with the module and is referenced **by name** — it works from any folder, whether you cloned the repo or ran `Install-Module`. To use your own quill instead, pass its folder path (e.g. `-QuillPath C:\quills\my_letter`).
+If you installed from the Gallery, point `-QuillPath` at your own quill folder:
+
+```powershell
+Export-QuillDocument -QuillPath C:\quills\my_letter -OutputPath .\memo.pdf
+```
+
+The remaining examples use `usaf_memo` for concreteness — substitute your quill.
 
 ## Write your own memo
 
