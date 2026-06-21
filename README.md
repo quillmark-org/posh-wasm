@@ -1,5 +1,7 @@
 # quillmark (PowerShell module)
 
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/quillmark?label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/quillmark)
+
 Turn Markdown into finished, correctly formatted administrative documents — PDFs (or SVG/PNG) — straight from PowerShell. Formatting comes from a **quill**: a ready-made template such as `usaf_memo` (a U.S. Air Force / Space Force official memorandum). You write the content; the quill handles the layout.
 
 Everything runs offline on Windows with no extra dependencies. Ideal for scripting or scheduling batches of routine paperwork on restricted environments.
