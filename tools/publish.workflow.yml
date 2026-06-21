@@ -1,0 +1,61 @@
+name: publish
+
+# ACTIVATION: this file ships as tools/publish.workflow.yml. To enable it, place
+# it at .github/workflows/publish.yml in the repo. Adding workflow files requires
+# a token with the `workflow` scope, so commit it via the GitHub web UI or push
+# with a suitably-scoped PAT.
+#
+# Publish quillmark to the PowerShell Gallery when a version tag is pushed.
+# Tag must match the ModuleVersion in quillmark.psd1, e.g.:
+#   git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    # The PSGALLERY_API_KEY secret lives in the "release" environment.
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+
+      # dist/ (the WASM bundle) is committed, so no Node build is needed here.
+      - name: Stage shippable module
+        id: stage
+        shell: pwsh
+        run: |
+          $pkg = ./tools/Build-Package.ps1
+          "path=$pkg" >> $env:GITHUB_OUTPUT
+          Write-Host "Staged module at $pkg"
+
+      - name: Validate manifest and tag/version match
+        shell: pwsh
+        run: |
+          $pkg = "${{ steps.stage.outputs.path }}"
+          $m = Test-ModuleManifest (Join-Path $pkg 'quillmark.psd1')
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          if ($m.Version.ToString() -ne $tag) {
+            throw "Tag '$tag' does not match module version '$($m.Version)'. Update ModuleVersion or retag."
+          }
+          Write-Host "quillmark $($m.Version) - manifest OK"
+
+      - name: PSScriptAnalyzer (errors only)
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $issues = Invoke-ScriptAnalyzer -Path "${{ steps.stage.outputs.path }}" -Recurse -Severity Error
+          if ($issues) { $issues | Format-Table -AutoSize; throw "PSScriptAnalyzer found $($issues.Count) error(s)." }
+          Write-Host "PSScriptAnalyzer clean"
+
+      - name: Publish to PowerShell Gallery
+        shell: pwsh
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        run: |
+          if (-not $env:PSGALLERY_API_KEY) { throw "PSGALLERY_API_KEY secret is not available to this job." }
+          Install-PackageProvider -Name NuGet -Force -Scope CurrentUser | Out-Null
+          Publish-Module -Path "${{ steps.stage.outputs.path }}" -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+          Write-Host "Published quillmark to the PowerShell Gallery."

@@ -20,10 +20,25 @@ routine paperwork.
 - This module, plus at least one quill. This repo ships the **`usaf_memo`** quill
   used in the examples below.
 
-## Set up
+## Install
+
+Two supported ways — both run fully offline once installed.
+
+**From the PowerShell Gallery**
 
 ```powershell
-Import-Module .\quillmark.psd1
+Install-Module quillmark
+Import-Module quillmark
+```
+
+**From a clone or downloaded copy of the repo**
+
+Everything needed at runtime (the WASM bundle, the WebView2 DLLs and native
+loaders, and the `usaf_memo` sample) is committed, so no build step is required:
+
+```powershell
+git clone https://github.com/quillmark-org/posh-wasm
+Import-Module .\posh-wasm\quillmark.psd1
 ```
 
 ## Make your first PDF
@@ -135,5 +150,18 @@ cd web
 npm install
 npx vite build   # emits ../dist
 ```
+
+**Publishing to the PowerShell Gallery** is automated by
+`tools/publish.workflow.yml`. To enable it, copy that file to
+`.github/workflows/publish.yml` (adding workflows needs a token with the
+`workflow` scope, so do it via the GitHub web UI or a scoped PAT), set the
+`PSGALLERY_API_KEY` secret in the `release` environment, then publish by pushing
+a tag that matches `ModuleVersion`:
+
+```powershell
+git tag v0.1.0; git push origin v0.1.0
+```
+
+To build the publishable package locally for inspection: `./tools/Build-Package.ps1`.
 
 </details>

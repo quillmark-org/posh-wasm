@@ -3,6 +3,7 @@ node_modules/
 reference/web/node_modules/
 reference/web/dist/
 web/dist/
+_pkg/
 *.log
 
 # Render outputs
