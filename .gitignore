@@ -1,7 +1,5 @@
 # Node build-time artifacts (bundle is built on the dev machine; ship dist/ deliberately)
 node_modules/
-reference/web/node_modules/
-reference/web/dist/
 web/dist/
 _pkg/
 *.log

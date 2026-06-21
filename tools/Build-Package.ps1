@@ -3,7 +3,7 @@
     Stage the shippable quillmark module into a clean folder for publishing.
 .DESCRIPTION
     Publish-Module packages the entire directory that holds the .psd1, so the
-    repo (with web/, reference/, .git, etc.) must not be published directly.
+    repo (with web/, .git, etc.) must not be published directly.
     This copies only the runtime files into <OutputDir>\quillmark and returns
     that path. Used by .github/workflows/publish.yml and for local test packs.
 .EXAMPLE
