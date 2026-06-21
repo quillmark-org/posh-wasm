@@ -139,28 +139,5 @@ produce **one file per page**, named `memo-1.svg`, `memo-2.svg`, and so on.
 
 ---
 
-<details>
-<summary>For maintainers: rebuilding the bundle</summary>
-
-The shipped `dist/` (the offline WebAssembly build of `@quillmark/wasm`) only
-needs rebuilding when that package or the JS bridge changes:
-
-```powershell
-cd web
-npm install
-npx vite build   # emits ../dist
-```
-
-**Publishing to the PowerShell Gallery** is automated by
-`.github/workflows/publish.yml`. With `PSGALLERY_API_KEY` set in the `release`
-environment, publish by pushing a tag that matches `ModuleVersion`:
-
-```powershell
-git tag v0.1.0; git push origin v0.1.0
-```
-
-The job stages a clean copy of the module, checks the tag matches the manifest
-version, runs PSScriptAnalyzer, and calls `Publish-Module`. To build the
-publishable package locally for inspection: `./tools/Build-Package.ps1`.
-
-</details>
+Building from source, rebuilding the bundle, or publishing a release? See
+[CONTRIBUTING.md](CONTRIBUTING.md).
