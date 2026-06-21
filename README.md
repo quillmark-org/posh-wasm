@@ -152,16 +152,15 @@ npx vite build   # emits ../dist
 ```
 
 **Publishing to the PowerShell Gallery** is automated by
-`tools/publish.workflow.yml`. To enable it, copy that file to
-`.github/workflows/publish.yml` (adding workflows needs a token with the
-`workflow` scope, so do it via the GitHub web UI or a scoped PAT), set the
-`PSGALLERY_API_KEY` secret in the `release` environment, then publish by pushing
-a tag that matches `ModuleVersion`:
+`.github/workflows/publish.yml`. With `PSGALLERY_API_KEY` set in the `release`
+environment, publish by pushing a tag that matches `ModuleVersion`:
 
 ```powershell
 git tag v0.1.0; git push origin v0.1.0
 ```
 
-To build the publishable package locally for inspection: `./tools/Build-Package.ps1`.
+The job stages a clean copy of the module, checks the tag matches the manifest
+version, runs PSScriptAnalyzer, and calls `Publish-Module`. To build the
+publishable package locally for inspection: `./tools/Build-Package.ps1`.
 
 </details>
