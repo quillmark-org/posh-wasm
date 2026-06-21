@@ -34,13 +34,13 @@ Import-Module .\posh-wasm\quillmark.psd1
 
 ## Make your first PDF
 
-The `usaf_memo` quill is bundled, so this works right after install — the quill is referenced by name:
+The `usaf_memo` quill is bundled, so this works right after install — it writes `usaf_memo.pdf` to the current folder:
 
 ```powershell
-Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
+Export-QuillDocument -QuillPath usaf_memo
 ```
 
-List the bundled quills, or use one of your own by passing a folder path:
+Add `-OutputPath` to choose the file, list the bundled quills with `Get-Quill`, or use one of your own by passing a folder path:
 
 ```powershell
 Get-Quill                                                  # bundled quills

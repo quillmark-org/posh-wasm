@@ -28,6 +28,32 @@ public static extern System.IntPtr LoadLibrary(string lpFileName);
 '@
 }
 
+# Lets -QuillPath accept a quill OBJECT from Get-Quill (or its catalog), not just
+# a string: any non-string object that has a .Path property is unwrapped to that
+# path. Strings pass through untouched, so `-QuillPath usaf_memo` and
+# `-QuillPath (Get-Quill usaf_memo)` both work. Defined via Add-Type (a compiled
+# type) because a PowerShell `class` can't be used as an attribute in its own module.
+if (-not ('PoshWasm.QuillPathTransformAttribute' -as [type])) {
+    Add-Type -ReferencedAssemblies ([psobject].Assembly.Location) -TypeDefinition @'
+using System;
+using System.Management.Automation;
+namespace PoshWasm {
+    public class QuillPathTransformAttribute : ArgumentTransformationAttribute {
+        public override object Transform(EngineIntrinsics engineIntrinsics, object inputData) {
+            if (inputData == null) return inputData;
+            PSObject pso = inputData as PSObject;
+            object baseObj = pso != null ? pso.BaseObject : inputData;
+            if (baseObj is string) return inputData;
+            PSObject view = pso != null ? pso : PSObject.AsPSObject(inputData);
+            PSPropertyInfo prop = view.Properties["Path"];
+            if (prop != null && prop.Value != null) return prop.Value.ToString();
+            return inputData;
+        }
+    }
+}
+'@
+}
+
 # ==========================================================================
 # Private helpers
 # ==========================================================================
@@ -443,12 +469,16 @@ function Export-QuillDocument {
         Output file for a single render. Multi-artifact formats write
         <base>-N.<ext> next to it.
     .PARAMETER OutputDirectory
-        Output folder for bulk rendering; each output is named from its input
-        file's base name plus the format extension.
+        Output folder; each output is named from its input file's base name (or
+        the quill name for a seeded render) plus the format extension. Defaults to
+        the current directory when neither -OutputPath nor -OutputDirectory is given.
     .PARAMETER Format
         Output format: pdf (default), svg, or png.
     .PARAMETER TimeoutSeconds
         Per-request timeout (also the host warm-up timeout). Default 120.
+    .EXAMPLE
+        Export-QuillDocument -QuillPath usaf_memo
+        # -> .\usaf_memo.pdf in the current directory
     .EXAMPLE
         Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
     .EXAMPLE
@@ -459,6 +489,7 @@ function Export-QuillDocument {
     [Alias('Invoke-QuillRender')]
     param(
         [Parameter(Mandatory)]
+        [PoshWasm.QuillPathTransformAttribute()]
         [ValidateNotNullOrEmpty()]
         [string]$QuillPath,
 
@@ -485,9 +516,12 @@ function Export-QuillDocument {
         if ($PSBoundParameters.ContainsKey('Markdown') -and $PSBoundParameters.ContainsKey('MarkdownPath')) {
             throw "Specify only one of -Markdown or -MarkdownPath."
         }
-        $mode = if ($PSCmdlet.ParameterSetName -eq 'ToDir') { 'dir' } else { 'file' }
-        if ($mode -eq 'file' -and -not $PSBoundParameters.ContainsKey('OutputPath')) {
-            throw "Specify -OutputPath (single render) or -OutputDirectory (bulk)."
+        # -OutputPath => write that exact file. Otherwise write to a directory,
+        # naming each output after its input. With neither -OutputPath nor
+        # -OutputDirectory, default to the current directory (KISS).
+        $mode = if ($PSBoundParameters.ContainsKey('OutputPath')) { 'file' } else { 'dir' }
+        if ($mode -eq 'dir' -and -not $PSBoundParameters.ContainsKey('OutputDirectory')) {
+            $OutputDirectory = (Get-Location).Path
         }
         $qhost = Open-QuillHost -QuillPath $QuillPath -TimeoutSeconds $TimeoutSeconds
         $itemCount = 0
@@ -582,6 +616,7 @@ function Get-Quill {
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [PoshWasm.QuillPathTransformAttribute()]
         [Alias('FullName', 'Path')]
         [string]$QuillPath,
 
@@ -681,6 +716,7 @@ function Test-QuillDocument {
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory)]
+        [PoshWasm.QuillPathTransformAttribute()]
         [ValidateNotNullOrEmpty()]
         [string]$QuillPath,
 
