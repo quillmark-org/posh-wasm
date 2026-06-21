@@ -51,6 +51,36 @@ function Resolve-WebView2Loader {
     (Resolve-Path -LiteralPath $path).Path
 }
 
+function Get-QuillSampleName {
+    # Names of quills bundled with the module (any folder at the module root that
+    # contains a Quill.yaml). usaf_memo ships as the built-in sample.
+    Get-ChildItem -LiteralPath $script:ModuleRoot -Directory -ErrorAction SilentlyContinue |
+        Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'Quill.yaml') } |
+        ForEach-Object { $_.Name }
+}
+
+function Resolve-QuillPath {
+    # Turn a -QuillPath argument into an absolute quill directory. An existing
+    # path (relative or absolute) always wins; a bare name with no separators is
+    # resolved against the quills bundled with the module, so `-QuillPath usaf_memo`
+    # works the same whether the module is cloned or installed from the Gallery.
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$QuillPath)
+
+    if (Test-Path -LiteralPath $QuillPath -PathType Container) {
+        return (Resolve-Path -LiteralPath $QuillPath).Path
+    }
+    if ($QuillPath -notmatch '[\\/]') {
+        $bundled = Join-Path $script:ModuleRoot $QuillPath
+        if (Test-Path -LiteralPath (Join-Path $bundled 'Quill.yaml')) {
+            return (Resolve-Path -LiteralPath $bundled).Path
+        }
+    }
+    $samples = (Get-QuillSampleName) -join ', '
+    $hint = if ($samples) { " Bundled quills: $samples." } else { '' }
+    throw "QuillPath '$QuillPath' is not an existing quill directory or a bundled quill name.$hint"
+}
+
 function Get-QuillTree {
     # Walk a quill directory into a hashtable of "<relative/path>" -> base64.
     # Forward-slash keys from the quill ROOT, exactly what Quill.fromTree wants.
@@ -247,6 +277,7 @@ function Open-QuillHost {
         throw "Bundled web assets not found at '$script:DistPath'. Rebuild the dist/ folder with: (cd web; npm install; npx vite build)."
     }
 
+    $QuillPath = Resolve-QuillPath -QuillPath $QuillPath
     $tree   = Get-QuillTree -QuillPath $QuillPath
     $loader = Resolve-WebView2Loader
 
@@ -395,9 +426,9 @@ function Export-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request timeout (also the host warm-up timeout). Default 120.
     .EXAMPLE
-        Export-QuillDocument -QuillPath .\usaf_memo -OutputPath .\memo.pdf
+        Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\usaf_memo -OutputDirectory .\out
+        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath usaf_memo -OutputDirectory .\out
     #>
     [CmdletBinding(DefaultParameterSetName = 'ToPath')]
     [OutputType([PSCustomObject])]
@@ -512,9 +543,9 @@ function Get-Quill {
     .PARAMETER TimeoutSeconds
         Host warm-up timeout. Default 120.
     .EXAMPLE
-        Get-Quill -QuillPath .\usaf_memo
+        Get-Quill -QuillPath usaf_memo
     .EXAMPLE
-        (Get-Quill .\usaf_memo).Fields | Where-Object { -not $_.HasDefault }
+        (Get-Quill usaf_memo).Fields | Where-Object { -not $_.HasDefault }
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
@@ -595,7 +626,7 @@ function Test-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request / warm-up timeout. Default 120.
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Test-QuillDocument -QuillPath .\usaf_memo |
+        Get-ChildItem .\inbox\*.md | Test-QuillDocument -QuillPath usaf_memo |
             Where-Object { -not $_.IsValid }
     #>
     [CmdletBinding()]

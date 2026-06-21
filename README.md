@@ -31,8 +31,12 @@ Import-Module .\quillmark.psd1
 Render the quill's built-in example so you can see the output right away:
 
 ```powershell
-Export-QuillDocument -QuillPath .\usaf_memo -OutputPath .\memo.pdf
+Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
 ```
+
+`usaf_memo` ships with the module and is referenced **by name** — it works from
+any folder, whether you cloned the repo or ran `Install-Module`. To use your own
+quill instead, pass its folder path (e.g. `-QuillPath C:\quills\my_letter`).
 
 ## Write your own memo
 
@@ -57,7 +61,7 @@ This is the first paragraph of the memo. Paragraphs are numbered automatically.
 Render it:
 
 ```powershell
-Export-QuillDocument -QuillPath .\usaf_memo -OutputPath .\memo.pdf -MarkdownPath .\my-memo.md
+Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf -MarkdownPath .\my-memo.md
 ```
 
 See **`memo_example.md`** in this repo for a complete, annotated memo.
@@ -68,7 +72,7 @@ Ask the quill instead of guessing. Fields without a default are the ones you'll
 usually want to fill:
 
 ```powershell
-(Get-Quill .\usaf_memo).Fields |
+(Get-Quill usaf_memo).Fields |
     Where-Object { -not $_.HasDefault } |
     Format-Table Name, Type, Description
 ```
@@ -80,7 +84,7 @@ line, one pass:
 
 ```powershell
 Get-ChildItem .\memos\*.md |
-    Export-QuillDocument -QuillPath .\usaf_memo -OutputDirectory .\out
+    Export-QuillDocument -QuillPath usaf_memo -OutputDirectory .\out
 ```
 
 The engine starts once and is reused for the whole batch, so large runs stay
@@ -91,7 +95,7 @@ problems, without rendering anything:
 
 ```powershell
 Get-ChildItem .\memos\*.md |
-    Test-QuillDocument -QuillPath .\usaf_memo |
+    Test-QuillDocument -QuillPath usaf_memo |
     Where-Object { -not $_.IsValid }
 ```
 
