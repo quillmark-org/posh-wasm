@@ -15,6 +15,7 @@
 
 $script:ModuleRoot = $PSScriptRoot
 $script:DistPath   = Join-Path $script:ModuleRoot 'dist'
+$script:QuillsDir  = Join-Path $script:ModuleRoot 'quills'
 
 # kernel32.LoadLibrary, used to pre-load the architecture-correct native
 # WebView2 loader process-wide before any WebView2 managed call. Defined in the
@@ -51,12 +52,35 @@ function Resolve-WebView2Loader {
     (Resolve-Path -LiteralPath $path).Path
 }
 
-function Get-QuillSampleName {
-    # Names of quills bundled with the module (any folder at the module root that
-    # contains a Quill.yaml). usaf_memo ships as the built-in sample.
-    Get-ChildItem -LiteralPath $script:ModuleRoot -Directory -ErrorAction SilentlyContinue |
+function Get-BundledQuillName {
+    # Names of quills bundled with the module: each folder under quills/ that
+    # contains a Quill.yaml. The set grows as more templates are shipped.
+    Get-ChildItem -LiteralPath $script:QuillsDir -Directory -ErrorAction SilentlyContinue |
         Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'Quill.yaml') } |
-        ForEach-Object { $_.Name }
+        ForEach-Object { $_.Name } |
+        Sort-Object
+}
+
+function Get-QuillIdentity {
+    # Cheap identity read straight from a quill's Quill.yaml `quill:` header -- no
+    # WebView2/WASM. Used to list the bundled catalog quickly.
+    param([Parameter(Mandatory)][string]$QuillDir)
+    $id = [pscustomobject]@{ Name = $null; Version = $null; Backend = $null; Description = $null }
+    $yaml = Join-Path $QuillDir 'Quill.yaml'
+    if (-not (Test-Path -LiteralPath $yaml)) { return $id }
+    $inQuill = $false
+    foreach ($line in [IO.File]::ReadAllLines($yaml)) {
+        if ($line -match '^\s*#') { continue }
+        if ($line -match '^quill:\s*$') { $inQuill = $true; continue }
+        if ($inQuill) {
+            if ($line -match '^\S') { break }   # dedent => left the quill: block
+            if     ($line -match '^\s+name:\s*(.+?)\s*$')        { $id.Name        = $matches[1].Trim('"', "'") }
+            elseif ($line -match '^\s+version:\s*(.+?)\s*$')     { $id.Version     = $matches[1].Trim('"', "'") }
+            elseif ($line -match '^\s+backend:\s*(.+?)\s*$')     { $id.Backend     = $matches[1].Trim('"', "'") }
+            elseif ($line -match '^\s+description:\s*(.+?)\s*$') { $id.Description = $matches[1].Trim('"', "'") }
+        }
+    }
+    $id
 }
 
 function Resolve-QuillPath {
@@ -71,13 +95,13 @@ function Resolve-QuillPath {
         return (Resolve-Path -LiteralPath $QuillPath).Path
     }
     if ($QuillPath -notmatch '[\\/]') {
-        $bundled = Join-Path $script:ModuleRoot $QuillPath
+        $bundled = Join-Path $script:QuillsDir $QuillPath
         if (Test-Path -LiteralPath (Join-Path $bundled 'Quill.yaml')) {
             return (Resolve-Path -LiteralPath $bundled).Path
         }
     }
-    $samples = (Get-QuillSampleName) -join ', '
-    $hint = if ($samples) { " Bundled quills: $samples." } else { '' }
+    $names = (Get-BundledQuillName) -join ', '
+    $hint = if ($names) { " Bundled quills: $names." } else { '' }
     throw "QuillPath '$QuillPath' is not an existing quill directory or a bundled quill name.$hint"
 }
 
@@ -534,25 +558,31 @@ function Get-Quill {
     .SYNOPSIS
         Inspect a quill: identity, supported formats, fields, schema, blueprint.
     .DESCRIPTION
-        Loads a quill and returns a rich object describing it. The default view
-        shows Name/Version/Backend/SupportedFormats/Description; the full object
+        With no -QuillPath, lists the quills bundled with the module (a cheap
+        catalog: Name/Version/Backend/Description, read from each Quill.yaml).
+
+        With a -QuillPath (a bundled quill name or a directory), loads that quill
+        and returns a rich object: the default view shows
+        Name/Version/Backend/SupportedFormats/Description, and the full object
         also carries Fields (a projected field table), CardKinds, Schema (raw),
         and Blueprint (starter markdown).
     .PARAMETER QuillPath
-        Path to the quill version directory. Accepts pipeline input.
+        Bundled quill name (e.g. usaf_memo) or path to a quill directory. Accepts
+        pipeline input. Omit to list the bundled quills.
     .PARAMETER TimeoutSeconds
         Host warm-up timeout. Default 120.
     .EXAMPLE
-        Get-Quill -QuillPath usaf_memo
+        Get-Quill
+    .EXAMPLE
+        Get-Quill usaf_memo
     .EXAMPLE
         (Get-Quill usaf_memo).Fields | Where-Object { -not $_.HasDefault }
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [Alias('FullName', 'Path')]
-        [ValidateNotNullOrEmpty()]
         [string]$QuillPath,
 
         [ValidateRange(1, 3600)]
@@ -560,6 +590,24 @@ function Get-Quill {
     )
 
     process {
+        # No quill specified -> emit the bundled catalog (cheap, no WebView2).
+        if ([string]::IsNullOrEmpty($QuillPath)) {
+            foreach ($name in (Get-BundledQuillName)) {
+                $dir = Join-Path $script:QuillsDir $name
+                $id = Get-QuillIdentity -QuillDir $dir
+                $row = [pscustomobject]@{
+                    Name        = if ($id.Name) { $id.Name } else { $name }
+                    Version     = $id.Version
+                    Backend     = $id.Backend
+                    Description = $id.Description
+                    Path        = $dir
+                }
+                $row.PSObject.TypeNames.Insert(0, 'PoshWasm.QuillSummary')
+                $row
+            }
+            return
+        }
+
         $qhost = Open-QuillHost -QuillPath $QuillPath -TimeoutSeconds $TimeoutSeconds
         try {
             $info = $qhost.Info
@@ -698,5 +746,16 @@ function Test-QuillDocument {
         if ($qhost) { Close-QuillHost -QuillHost $qhost }
     }
 }
+
+# Tab-complete -QuillPath with the bundled quill names (suggestions only; any
+# path is still accepted). Module-scoped scriptblock, so $script:QuillsDir and
+# Get-BundledQuillName are in scope.
+$quillPathCompleter = {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Get-BundledQuillName |
+        Where-Object { $_ -like "$wordToComplete*" } |
+        ForEach-Object { [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_) }
+}
+Register-ArgumentCompleter -CommandName 'Export-QuillDocument', 'Get-Quill', 'Test-QuillDocument' -ParameterName 'QuillPath' -ScriptBlock $quillPathCompleter
 
 Export-ModuleMember -Function Export-QuillDocument, Get-Quill, Test-QuillDocument -Alias Invoke-QuillRender

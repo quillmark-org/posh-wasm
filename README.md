@@ -12,7 +12,7 @@ Maintained by [TTQ](https://tonguetoquill.com/).
 
 - Windows with **PowerShell 5.1 or 7**.
 - The **Microsoft Edge WebView2 Runtime** — already present on Windows 11 and any PC with a current version of Edge. (If it's missing, the command tells you and links the free installer.)
-- This module, plus a **quill** (the template). The examples use `usaf_memo`, a sample included in the **repo** — clone or download it to follow along, or point `-QuillPath` at your own quill. The Gallery package is the engine only; it doesn't bundle quills.
+- This module. It bundles the `usaf_memo` quill (the template) used in the examples — run `Get-Quill` to see all bundled quills, or point `-QuillPath` at your own quill folder.
 
 ## Install
 
@@ -34,19 +34,18 @@ Import-Module .\posh-wasm\quillmark.psd1
 
 ## Make your first PDF
 
-If you cloned or downloaded the repo, the `usaf_memo` sample renders right away (referenced by name from the repo folder):
+The `usaf_memo` quill is bundled, so this works right after install — the quill is referenced by name:
 
 ```powershell
 Export-QuillDocument -QuillPath usaf_memo -OutputPath .\memo.pdf
 ```
 
-If you installed from the Gallery, point `-QuillPath` at your own quill folder:
+List the bundled quills, or use one of your own by passing a folder path:
 
 ```powershell
-Export-QuillDocument -QuillPath C:\quills\my_letter -OutputPath .\memo.pdf
+Get-Quill                                                  # bundled quills
+Export-QuillDocument -QuillPath C:\quills\my_letter -OutputPath .\letter.pdf
 ```
-
-The remaining examples use `usaf_memo` for concreteness — substitute your quill.
 
 ## Write your own memo
 
@@ -109,7 +108,7 @@ Get-ChildItem .\memos\*.md |
 | Command | What it does |
 |---|---|
 | `Export-QuillDocument` | Render document(s) to file(s). `-OutputPath` for one, `-OutputDirectory` for a batch (pipe files in). `-Format pdf\|svg\|png`. With no markdown, renders the quill's example. |
-| `Get-Quill` | Inspect a quill: `.SupportedFormats`, `.Fields`, `.Blueprint`, and identity (name/version). |
+| `Get-Quill` | No args: list the bundled quills. With a name/path: inspect one (`.SupportedFormats`, `.Fields`, `.Blueprint`, identity). |
 | `Test-QuillDocument` | Validate document(s) without rendering. `IsValid` tells you it will render; `Diagnostics` explains any problems. |
 
 (`Invoke-QuillRender` still works as an alias of `Export-QuillDocument`.)

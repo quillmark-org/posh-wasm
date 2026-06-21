@@ -1,7 +1,7 @@
 # Third-Party Notices
 
 The `quillmark` module is licensed under Apache-2.0 (see `LICENSE`). The
-**published Gallery package** bundles and redistributes the following two
+**published Gallery package** bundles and redistributes the following
 third-party components, each under its own license.
 
 ## Microsoft Edge WebView2
@@ -20,12 +20,12 @@ https://aka.ms/webview2/license
 Copyright (c) the Quillmark authors. Licensed under "MIT OR Apache-2.0".
 https://www.npmjs.com/package/@quillmark/wasm
 
-## usaf_memo sample quill (repository only -- NOT in the published package)
+## Bundled quills (`quills/`)
 
-The `usaf_memo/` sample quill lives in the source repository for examples and
-tests; it is **excluded from the published Gallery package**. It includes fonts
-under their own licenses, with each font's license text alongside it under
-`usaf_memo/packages/tonguetoquill-usaf-memo/fonts/`:
+The module bundles ready-to-use quills under `quills/`. Each quill carries its
+own fonts and assets under their own licenses, with license texts shipped
+alongside them. The `usaf_memo` quill includes these fonts (license text under
+`quills/usaf_memo/packages/tonguetoquill-usaf-memo/fonts/`):
 
 | Font | License (see the font's folder) |
 |---|---|
@@ -34,5 +34,5 @@ under their own licenses, with each font's license text alongside it under
 | Liberation Mono | SIL OFL / GPLv2 with font exception |
 | Nimbus Roman No9 L | GNU General Public License |
 
-These fonts are redistributed unmodified under their respective licenses for use
-by the sample quill. If you repackage or remove the sample, review these terms.
+These fonts are redistributed unmodified under their respective licenses. When
+adding a new bundled quill, list its third-party assets here.

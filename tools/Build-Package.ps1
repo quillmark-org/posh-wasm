@@ -22,9 +22,8 @@ $stage = Join-Path $OutputDir 'quillmark'
 if (Test-Path -LiteralPath $stage) { Remove-Item -Recurse -Force -LiteralPath $stage }
 New-Item -ItemType Directory -Force -Path $stage | Out-Null
 
-# Loose files that ship with the module. The usaf_memo sample and memo_example.md
-# are intentionally NOT shipped (repo-only fixtures): they pull in third-party
-# font licenses and a separately-versioned template. Consumers bring their own quill.
+# Loose files that ship with the module. memo_example.md stays repo-only (it's a
+# tutorial doc); the bundled quills ship under quills/ (see below).
 $files = @(
     'quillmark.psd1'
     'quillmark.psm1'
@@ -40,8 +39,8 @@ foreach ($f in $files) {
     Copy-Item -LiteralPath $src -Destination $stage
 }
 
-# Directories that ship: the WASM bundle and the native loaders.
-foreach ($d in @('dist', 'native')) {
+# Directories that ship: the WASM bundle, native loaders, and the bundled quills.
+foreach ($d in @('dist', 'native', 'quills')) {
     $src = Join-Path $root $d
     if (-not (Test-Path -LiteralPath $src)) { throw "Missing required folder: $d" }
     Copy-Item -LiteralPath $src -Destination $stage -Recurse

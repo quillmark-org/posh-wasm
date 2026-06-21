@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'quillmark.psm1'
-    ModuleVersion     = '0.1.0'
+    ModuleVersion     = '0.2.0'
     GUID              = 'ee5bcb9a-218c-49de-ae95-259706867dc1'
     Author            = 'quillmark-org'
     CompanyName       = 'quillmark-org'
@@ -27,7 +27,8 @@
         'native\win-x64\WebView2Loader.dll',
         'native\win-x86\WebView2Loader.dll',
         'native\win-arm64\WebView2Loader.dll',
-        'dist\index.html'
+        'dist\index.html',
+        'quills\usaf_memo\Quill.yaml'
     )
 
     PrivateData = @{
@@ -35,7 +36,7 @@
             Tags         = @('quill', 'quillmark', 'typst', 'pdf', 'wasm', 'webview2', 'render', 'Windows')
             ProjectUri   = 'https://github.com/quillmark-org/posh-wasm'
             LicenseUri   = 'https://github.com/quillmark-org/posh-wasm/blob/main/LICENSE'
-            ReleaseNotes = 'Render quills to PDF/SVG/PNG offline (no Node) via a WebView2-hosted @quillmark/wasm bundle. Cmdlets: Export-QuillDocument (pipeline/bulk), Get-Quill, Test-QuillDocument. Bundles the usaf_memo sample quill (reference bundled quills by name).'
+            ReleaseNotes = '0.2.0: Bundle quills under quills/ (usaf_memo ships in the package); Get-Quill with no args lists the bundled catalog; -QuillPath tab-completes bundled names. Render quills to PDF/SVG/PNG offline (no Node) via a WebView2-hosted @quillmark/wasm bundle. Cmdlets: Export-QuillDocument (pipeline/bulk), Get-Quill, Test-QuillDocument.'
         }
     }
 }

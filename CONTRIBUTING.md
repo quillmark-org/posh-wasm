@@ -11,7 +11,7 @@ Notes for building, packaging, and releasing the module. End-user docs are in
 | `dist/` | committed offline build of `@quillmark/wasm` (shipped to consumers) |
 | `web/` | Vite source that produces `dist/` |
 | `Microsoft.Web.WebView2.*.dll`, `native/` | WebView2 managed assemblies (AnyCPU) + per-arch native loaders |
-| `usaf_memo/` | bundled sample quill |
+| `quills/` | bundled quills shipped with the module (e.g. `usaf_memo`) |
 | `tools/Build-Package.ps1` | stages the shippable module |
 | `.github/workflows/publish.yml` | tag-triggered PowerShell Gallery release |
 
