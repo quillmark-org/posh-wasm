@@ -2,6 +2,7 @@
 node_modules/
 reference/web/node_modules/
 reference/web/dist/
+web/dist/
 *.log
 
 # Render outputs
