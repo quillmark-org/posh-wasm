@@ -51,6 +51,11 @@ jobs:
           PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
         run: |
           if (-not $env:PSGALLERY_API_KEY) { throw "PSGALLERY_API_KEY secret is not available to this job." }
-          Install-PackageProvider -Name NuGet -Force -Scope CurrentUser | Out-Null
-          Publish-Module -Path "${{ steps.stage.outputs.path }}" -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+          # Use PSResourceGet (modern, preinstalled on the runner) to avoid the
+          # legacy NuGet package-provider bootstrap that Publish-Module needs.
+          if (-not (Get-Command Publish-PSResource -ErrorAction SilentlyContinue)) {
+            Install-Module Microsoft.PowerShell.PSResourceGet -Force -Scope CurrentUser -AllowClobber
+            Import-Module Microsoft.PowerShell.PSResourceGet
+          }
+          Publish-PSResource -Path "${{ steps.stage.outputs.path }}" -Repository PSGallery -ApiKey $env:PSGALLERY_API_KEY -Verbose
           Write-Host "Published quillmark to the PowerShell Gallery."
