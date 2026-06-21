@@ -20,11 +20,11 @@ references:
 classification: UNCLASSIFIED
 ~~~
 
-This file is both a complete `usaf_memo` document and a short tour of the posh-wasm module. Import the module with `Import-Module .\posh-wasm.psd1`, then render this file to PDF with `Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf -MarkdownPath .\memo_example.md`. For your very first run you can skip the document entirely: omit `-MarkdownPath` and the quill's seeded starter is rendered instead. Top-level paragraphs like this one are auto-numbered; do not add your own numbers.
+This file is both a complete `usaf_memo` document and a short tour of the posh-wasm module. Import the module with `Import-Module .\quillmark.psd1`, then render this file to PDF with `Export-QuillDocument -QuillPath .\usaf_memo -OutputPath .\memo.pdf -MarkdownPath .\memo_example.md`. For your very first run you can skip the document entirely: omit `-MarkdownPath` and the quill's seeded starter is rendered instead. Top-level paragraphs like this one are auto-numbered; do not add your own numbers.
 
-A Quillmark document is Markdown with a `~~~`-fenced metadata block on top. The block opens with the two system lines `$quill` and `$kind`, then sets the quill's fields (`memo_for`, `subject`, `signature_block`, and so on). To discover which fields a quill accepts, ask the module rather than reading YAML by hand: `(Get-Quill .\usaf_memo\0.2.0).Fields` lists every field with its type and default, and `(Get-Quill .\usaf_memo\0.2.0).SupportedFormats` confirms it can emit pdf, svg, and png.
+A Quillmark document is Markdown with a `~~~`-fenced metadata block on top. The block opens with the two system lines `$quill` and `$kind`, then sets the quill's fields (`memo_for`, `subject`, `signature_block`, and so on). To discover which fields a quill accepts, ask the module rather than reading YAML by hand: `(Get-Quill .\usaf_memo).Fields` lists every field with its type and default, and `(Get-Quill .\usaf_memo).SupportedFormats` confirms it can emit pdf, svg, and png.
 
-Validate a document before you render it with `Test-QuillDocument -QuillPath .\usaf_memo\0.2.0 -MarkdownPath .\memo_example.md`, which reports `IsValid` without writing a file. To generate many documents at once, pipe them through a single warm render host: `Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputDirectory .\out`.
+Validate a document before you render it with `Test-QuillDocument -QuillPath .\usaf_memo -MarkdownPath .\memo_example.md`, which reports `IsValid` without writing a file. To generate many documents at once, pipe them through a single warm render host: `Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\usaf_memo -OutputDirectory .\out`.
 
 Everything below the closing `~~~` is the memo body, written in plain Markdown:
 

@@ -1,5 +1,5 @@
 ﻿@{
-    RootModule        = 'posh-wasm.psm1'
+    RootModule        = 'quillmark.psm1'
     ModuleVersion     = '1.0.0'
     GUID              = 'ee5bcb9a-218c-49de-ae95-259706867dc1'
     Author            = 'quillmark-org'
@@ -20,8 +20,8 @@
 
     # Files that ship with the module (assets are loaded at runtime, not dot-sourced).
     FileList = @(
-        'posh-wasm.psm1',
-        'posh-wasm.psd1',
+        'quillmark.psm1',
+        'quillmark.psd1',
         'Microsoft.Web.WebView2.Core.dll',
         'Microsoft.Web.WebView2.WinForms.dll',
         'native\win-x64\WebView2Loader.dll',

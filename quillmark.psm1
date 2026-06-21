@@ -1,6 +1,6 @@
 #requires -Version 5.1
 
-# posh-wasm - render a quill to PDF/SVG/PNG from PowerShell, fully offline, with
+# quillmark - render a quill to PDF/SVG/PNG from PowerShell, fully offline, with
 # no Node.js at runtime. A WebView2 control hosted by PowerShell loads the
 # bundled @quillmark/wasm build (dist/) and does the actual render.
 #
@@ -44,7 +44,7 @@ function Resolve-WebView2Loader {
         'X64'   { 'win-x64' }
         'X86'   { 'win-x86' }
         'Arm64' { 'win-arm64' }
-        default { throw "Unsupported process architecture '$arch'. posh-wasm ships loaders for x64, x86, and arm64." }
+        default { throw "Unsupported process architecture '$arch'. quillmark ships loaders for x64, x86, and arm64." }
     }
     $path = Join-Path (Join-Path $script:ModuleRoot 'native') (Join-Path $sub 'WebView2Loader.dll')
     if (-not (Test-Path -LiteralPath $path)) { throw "Native WebView2 loader not found for $sub at: $path" }
@@ -112,7 +112,7 @@ $global:PW_msg      = $null
 $global:PW_err      = $null
 $global:PW_expectId = 0
 
-$global:PW_udf = Join-Path $env:TEMP ("posh-wasm-wv2-" + [guid]::NewGuid().ToString('N'))
+$global:PW_udf = Join-Path $env:TEMP ("quillmark-wv2-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $global:PW_udf | Out-Null
 
 $global:PW_form = New-Object System.Windows.Forms.Form
@@ -131,7 +131,7 @@ $global:PW_wv.add_CoreWebView2InitializationCompleted({
         }
         $core = $s.CoreWebView2
         $core.SetVirtualHostNameToFolderMapping(
-            'posh-wasm.local', $global:PW_dist,
+            'quillmark.local', $global:PW_dist,
             [Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind]::Allow)
         $core.add_WebMessageReceived({
             param($s2, $e2)
@@ -145,7 +145,7 @@ $global:PW_wv.add_CoreWebView2InitializationCompleted({
                 $global:PW_done = $true
             }
         })
-        $core.Navigate('https://posh-wasm.local/index.html')
+        $core.Navigate('https://quillmark.local/index.html')
     } catch {
         $global:PW_err = "init handler error: " + $_.Exception.Message
         $global:PW_done = $true
@@ -395,9 +395,9 @@ function Export-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request timeout (also the host warm-up timeout). Default 120.
     .EXAMPLE
-        Export-QuillDocument -QuillPath .\usaf_memo\0.2.0 -OutputPath .\memo.pdf
+        Export-QuillDocument -QuillPath .\usaf_memo -OutputPath .\memo.pdf
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\memo\0.2.0 -OutputDirectory .\out
+        Get-ChildItem .\inbox\*.md | Export-QuillDocument -QuillPath .\usaf_memo -OutputDirectory .\out
     #>
     [CmdletBinding(DefaultParameterSetName = 'ToPath')]
     [OutputType([PSCustomObject])]
@@ -512,9 +512,9 @@ function Get-Quill {
     .PARAMETER TimeoutSeconds
         Host warm-up timeout. Default 120.
     .EXAMPLE
-        Get-Quill -QuillPath .\usaf_memo\0.2.0
+        Get-Quill -QuillPath .\usaf_memo
     .EXAMPLE
-        (Get-Quill .\usaf_memo\0.2.0).Fields | Where-Object { -not $_.HasDefault }
+        (Get-Quill .\usaf_memo).Fields | Where-Object { -not $_.HasDefault }
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
@@ -595,7 +595,7 @@ function Test-QuillDocument {
     .PARAMETER TimeoutSeconds
         Per-request / warm-up timeout. Default 120.
     .EXAMPLE
-        Get-ChildItem .\inbox\*.md | Test-QuillDocument -QuillPath .\memo\0.2.0 |
+        Get-ChildItem .\inbox\*.md | Test-QuillDocument -QuillPath .\usaf_memo |
             Where-Object { -not $_.IsValid }
     #>
     [CmdletBinding()]
