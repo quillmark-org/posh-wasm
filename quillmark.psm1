@@ -489,7 +489,7 @@ function Export-QuillDocument {
     [OutputType([PSCustomObject])]
     [Alias('Invoke-QuillRender')]
     param(
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [PoshWasm.QuillPathTransformAttribute()]
         [Alias('QuillPath')]
         [ValidateNotNullOrEmpty()]
@@ -718,7 +718,7 @@ function Test-QuillDocument {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [PoshWasm.QuillPathTransformAttribute()]
         [Alias('QuillPath')]
         [ValidateNotNullOrEmpty()]
